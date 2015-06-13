@@ -1,0 +1,200 @@
+
+
+
+/*********************************************************/
+/**         ALL FUNCTIONS ARE SAVED BELOW             **/
+/*********************************************************/
+
+
+
+/*********************************************************/
+/**         ALL CLASSES ARE SAVED BELOW             **/
+/*********************************************************/
+
+       /*************************************
+        ****  CLASS: Menu
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Image
+        *************************************/
+
+       /*************************************
+        ****  CLASS: SlotView
+        *************************************/
+
+       /*************************************
+        ****  CLASS: OutputView
+        *************************************/
+
+       /*************************************
+        ****  CLASS: StateBox
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Meter
+        *************************************/
+
+       /*************************************
+        ****  CLASS: InputOutputView
+        *************************************/
+
+       /*************************************
+        ****  CLASS: ListBox
+        *************************************/
+
+       /*************************************
+        ****  CLASS: SingleListBox
+        *************************************/
+
+       /*************************************
+        ****  CLASS: ComboBox
+        *************************************/
+
+       /*************************************
+        ****  CLASS: MultipleListBox
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Edit
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Slider
+        *************************************/
+
+       /*************************************
+        ****  CLASS: CheckBox
+        *************************************/
+
+       /*************************************
+        ****  CLASS: CheckBoxGroup
+        *************************************/
+
+       /*************************************
+        ****  CLASS: RadioButtonGroup
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Button
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Text
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Transcript
+        *************************************/
+
+       /*************************************
+        ****  CLASS: LinePlot
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Bitmap
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Drawing
+        *************************************/
+
+       /*************************************
+        ****  CLASS: KWindow
+        *************************************/
+
+       /*************************************
+        ****  CLASS: KSession
+        *************************************/
+
+       /*************************************
+        ****  CLASS: Jugador
+        *************************************/
+MakeClass( Jugador, Root );
+MakeSlot( Jugador:numero );
+SetSlotOption( Jugador:numero, VALUE_TYPE, NUMBER );
+SetSlotOption( Jugador:numero, MINIMUM_VALUE, 1 );
+SetSlotOption( Jugador:numero, MAXIMUM_VALUE, 2 );
+Jugador:numero = 1;
+MakeSlot( Jugador:puntos );
+SetSlotOption( Jugador:puntos, VALUE_TYPE, NUMBER );
+SetSlotOption( Jugador:puntos, MINIMUM_VALUE, 0 );
+SetSlotOption( Jugador:puntos, MAXIMUM_VALUE, 100 );
+Jugador:puntos = 0;
+MakeSlot( Jugador:cartas_emparejadas );
+SetSlotOption( Jugador:cartas_emparejadas, VALUE_TYPE, NUMBER );
+SetSlotOption( Jugador:cartas_emparejadas, MINIMUM_VALUE, 0 );
+SetSlotOption( Jugador:cartas_emparejadas, MAXIMUM_VALUE, 7 );
+Jugador:cartas_emparejadas = 0;
+MakeSlot( Jugador:se_le_recomienda );
+SetSlotOption( Jugador:se_le_recomienda, VALUE_TYPE, OBJECT );
+SetSlotOption( Jugador:se_le_recomienda, ALLOWABLE_CLASSES, PJ );
+MakeSlot( Jugador:posee );
+SetSlotOption( Jugador:posee, MULTIPLE );
+SetSlotOption( Jugador:posee, VALUE_TYPE, OBJECT );
+SetSlotOption( Jugador:posee, ALLOWABLE_CLASSES, Carta );
+ClearList( Jugador:posee );
+
+       /*************************************
+        ****  CLASS: Carta
+        *************************************/
+MakeClass( Carta, Root );
+MakeSlot( Carta:palo );
+SetSlotOption( Carta:palo, ALLOWABLE_VALUES, ORO, COPA, ESPADA, BASTO );
+MakeSlot( Carta:valor );
+SetSlotOption( Carta:valor, VALUE_TYPE, NUMBER );
+SetSlotOption( Carta:valor, MINIMUM_VALUE, 1 );
+SetSlotOption( Carta:valor, MAXIMUM_VALUE, 12 );
+MakeSlot( Carta:prioridad );
+SetSlotOption( Carta:prioridad, VALUE_TYPE, NUMBER );
+SetSlotOption( Carta:prioridad, MINIMUM_VALUE, 1 );
+SetSlotOption( Carta:prioridad, MAXIMUM_VALUE, 3 );
+MakeSlot( Carta:ubicacion );
+SetSlotOption( Carta:ubicacion, ALLOWABLE_VALUES, JUGADOR1, JUGADOR2, MAZO_LEVANTE, MAZO_DESCARTE );
+MakeSlot( Carta:grupo );
+SetSlotOption( Carta:grupo, MULTIPLE );
+SetSlotOption( Carta:grupo, VALUE_TYPE, OBJECT );
+SetSlotOption( Carta:grupo, ALLOWABLE_CLASSES, CARTA );
+ClearList( Carta:grupo );
+
+       /*************************************
+        ****  CLASS: PJ
+        *************************************/
+MakeClass( PJ, Root );
+MakeSlot( PJ:mazo );
+SetSlotOption( PJ:mazo, ALLOWABLE_VALUES, MAZO_DESCARTE, MAZO_LEVANTE );
+MakeSlot( PJ:carta );
+SetSlotOption( PJ:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( PJ:carta, ALLOWABLE_CLASSES, Carta );
+MakeSlot( PJ:cortar );
+SetSlotOption( PJ:cortar, VALUE_TYPE, BOOLEAN );
+MakeSlot( PJ:recomendado_a );
+SetSlotOption( PJ:recomendado_a, VALUE_TYPE, OBJECT );
+SetSlotOption( PJ:recomendado_a, ALLOWABLE_CLASSES, Jugador );
+
+
+
+/*********************************************************/
+/**         ALL INSTANCES ARE SAVED BELOW             **/
+/*********************************************************/
+
+       /*************************************
+        ****  INSTANCE: SESSION
+        *************************************/
+SESSION:X = 20;
+SESSION:Y = 120;
+SESSION:Width = 465;
+SESSION:Height = 220;
+ ResetWindow (  SESSION  ); 
+
+
+
+/*********************************************************/
+/**         ALL RULES ARE SAVED BELOW             **/
+/*********************************************************/
+
+
+
+/*********************************************************/
+/**         ALL GOALS ARE SAVED BELOW             **/
+/*********************************************************/
