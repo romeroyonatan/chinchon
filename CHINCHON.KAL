@@ -181,8 +181,8 @@ SetSlotOption( PJ:recomendado_a, ALLOWABLE_CLASSES, Jugador );
        /*************************************
         ****  INSTANCE: SESSION
         *************************************/
-SESSION:X = 20;
-SESSION:Y = 120;
+SESSION:X = 21;
+SESSION:Y = 121;
 SESSION:Width = 465;
 SESSION:Height = 220;
  ResetWindow (  SESSION  ); 
@@ -199,6 +199,29 @@ SESSION:Height = 220;
 MakeRule( R1, [jugador|Jugador carta|Carta pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas == 6 And
         carta:posicion #= JUGADOR1 And carta:valor > 5,
+    pj:cortar = FALSE );
+
+       /*************************************
+        ****  RULE: R2
+        *************************************/
+MakeRule( R2, [jugador|Jugador pj|PJ],
+    jugador:numero == 1 And jugador:cartas_emparejadas = 7,
+    pj:cortar = TRUE );
+
+       /*************************************
+        ****  RULE: R3
+        *************************************/
+MakeRule( R3, [jugador|Jugador carta|Carta pj|PJ],
+    jugador:numero == 1 And jugador:cartas_emparejadas == 6 And
+        carta:valor <= 5 And carta:posicion #= JUGADOR1 And jugador:puntaje
+        + carta:valor > 100,
+    pj:cortar = FALSE );
+
+       /*************************************
+        ****  RULE: R4
+        *************************************/
+MakeRule( R4, [jugador|Jugador pj|PJ],
+    jugador:numero == 1 And jugador:cartas_emparejadas < 6,
     pj:cortar = FALSE );
 
 
