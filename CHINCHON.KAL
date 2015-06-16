@@ -193,6 +193,14 @@ SESSION:Height = 220;
 /**         ALL RULES ARE SAVED BELOW             **/
 /*********************************************************/
 
+       /*************************************
+        ****  RULE: R1
+        *************************************/
+MakeRule( R1, [jugador|Jugador carta|Carta pj|PJ],
+    jugador:numero == 1 And jugador:cartas_emparejadas == 6 And
+        carta:posicion #= JUGADOR1 And carta:valor > 5,
+    pj:cortar = FALSE );
+
 
 
 /*********************************************************/
