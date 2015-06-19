@@ -187,6 +187,47 @@ SESSION:Width = 465;
 SESSION:Height = 220;
  ResetWindow (  SESSION  ); 
 
+       /*************************************
+        ****  INSTANCE: o7
+        *************************************/
+MakeInstance( o7, Carta );
+o7:palo = oro;
+o7:valor = 7;
+
+       /*************************************
+        ****  INSTANCE: o5
+        *************************************/
+MakeInstance( o5, Carta );
+o5:palo = oro;
+o5:valor = 5;
+
+       /*************************************
+        ****  INSTANCE: o6
+        *************************************/
+MakeInstance( o6, Carta );
+o6:palo = oro;
+o6:valor = 6;
+
+       /*************************************
+        ****  INSTANCE: b7
+        *************************************/
+MakeInstance( b7, Carta );
+b7:palo = basto;
+b7:valor = 7;
+
+       /*************************************
+        ****  INSTANCE: c7
+        *************************************/
+MakeInstance( c7, Carta );
+c7:palo = copa;
+c7:valor = 7;
+
+       /*************************************
+        ****  INSTANCE: j
+        *************************************/
+MakeInstance( j, Jugador );
+j:cartas_emparejadas = 9;
+
 
 
 /*********************************************************/
@@ -223,6 +264,28 @@ MakeRule( R3, [jugador|Jugador carta|Carta pj|PJ],
 MakeRule( R4, [jugador|Jugador pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas < 6,
     pj:cortar = FALSE );
+
+       /*************************************
+        ****  RULE: R5
+        *************************************/
+MakeRule( R5, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
+    c1:valor == c2:valor And c1:valor == c3:valor And Not( c1:palo
+                                                               #=
+                                                               c2:palo )
+        And Not( c1:palo #= c3:palo ) And Not( c3:palo #= c2:palo )
+        And c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1
+        And c3:ubicacion #= JUGADOR1 And Null?( c1:grupo )
+        And Null?( c2:grupo ) And Null?( c3:grupo ),
+    {
+    jugador:cartas_emparejadas += 3;
+    AppendToList( c1:grupo, c2 );
+    AppendToList( c1:grupo, c3 );
+    AppendToList( c1:grupo, c2 );
+    AppendToList( c2:grupo, c1 );
+    AppendToList( c2:grupo, c3 );
+    AppendToList( c3:grupo, c2 );
+    AppendToList( c3:grupo, c1 );
+    } );
 
 
 
