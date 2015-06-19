@@ -280,9 +280,9 @@ MakeRule( R4, [jugador|Jugador pj|PJ],
     pj:cortar = FALSE );
 
        /*************************************
-        ****  RULE: R5
+        ****  RULE: R10
         *************************************/
-MakeRule( R5, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
+MakeRule( R10, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
     c1:valor == c2:valor And c1:valor == c3:valor And Not( c1:palo
                                                                #=
                                                                c2:palo )
@@ -300,9 +300,9 @@ MakeRule( R5, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
     } );
 
        /*************************************
-        ****  RULE: R6
+        ****  RULE: R11
         *************************************/
-MakeRule( R6, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
+MakeRule( R11, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
     c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor +
                                                        2 )
         And c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo
@@ -320,9 +320,9 @@ MakeRule( R6, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
 
 
        /*************************************
-        ****  RULE: R7
+        ****  RULE: R12
         *************************************/
-MakeRule( R7, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
+MakeRule( R12, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
         c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1
         And c3:ubicacion #= JUGADOR1 And c4:ubicacion #= JUGADOR1 And
         c1:valor == c2:valor And c1:valor == c3:valor And c1:valor == c4:valor
@@ -349,9 +349,9 @@ MakeRule( R7, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
     } );
 
        /*************************************
-        ****  RULE: R8
+        ****  RULE: R13
         *************************************/
-MakeRule( R8, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
+MakeRule( R13, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
         c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 ) And c1:valor == ( c4:valor + 3 )
         And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo #= c4:palo
         And c1:ubicacion #= JUGADOR1 And c2:ubicacion
