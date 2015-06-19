@@ -193,6 +193,8 @@ SESSION:Height = 220;
 MakeInstance( o7, Carta );
 o7:palo = oro;
 o7:valor = 7;
+o7:ubicacion = JUGADOR1;
+SetValue( o7:grupo, b7, c7, b7 );
 
        /*************************************
         ****  INSTANCE: o5
@@ -200,6 +202,7 @@ o7:valor = 7;
 MakeInstance( o5, Carta );
 o5:palo = oro;
 o5:valor = 5;
+o5:ubicacion = JUGADOR1;
 
        /*************************************
         ****  INSTANCE: o6
@@ -207,6 +210,7 @@ o5:valor = 5;
 MakeInstance( o6, Carta );
 o6:palo = oro;
 o6:valor = 6;
+o6:ubicacion = JUGADOR1;
 
        /*************************************
         ****  INSTANCE: b7
@@ -214,6 +218,8 @@ o6:valor = 6;
 MakeInstance( b7, Carta );
 b7:palo = basto;
 b7:valor = 7;
+b7:ubicacion = JUGADOR1;
+SetValue( b7:grupo, o7, c7 );
 
        /*************************************
         ****  INSTANCE: c7
@@ -221,12 +227,20 @@ b7:valor = 7;
 MakeInstance( c7, Carta );
 c7:palo = copa;
 c7:valor = 7;
+c7:ubicacion = JUGADOR1;
+SetValue( c7:grupo, b7, o7 );
 
        /*************************************
         ****  INSTANCE: j
         *************************************/
 MakeInstance( j, Jugador );
-j:cartas_emparejadas = 9;
+j:cartas_emparejadas = 3;
+
+       /*************************************
+        ****  INSTANCE: pj
+        *************************************/
+MakeInstance( pj, PJ );
+pj:cortar = FALSE;
 
 
 
@@ -239,14 +253,14 @@ j:cartas_emparejadas = 9;
         *************************************/
 MakeRule( R1, [jugador|Jugador carta|Carta pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas == 6 And
-        carta:posicion #= JUGADOR1 And carta:valor > 5,
+        carta:ubicacion #= JUGADOR1 And carta:valor > 5,
     pj:cortar = FALSE );
 
        /*************************************
         ****  RULE: R2
         *************************************/
 MakeRule( R2, [jugador|Jugador pj|PJ],
-    jugador:numero == 1 And jugador:cartas_emparejadas = 7,
+    jugador:numero == 1 And jugador:cartas_emparejadas == 7,
     pj:cortar = TRUE );
 
        /*************************************
@@ -254,7 +268,7 @@ MakeRule( R2, [jugador|Jugador pj|PJ],
         *************************************/
 MakeRule( R3, [jugador|Jugador carta|Carta pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas == 6 And
-        carta:valor <= 5 And carta:posicion #= JUGADOR1 And jugador:puntaje
+        carta:valor <= 5 And carta:ubicacion #= JUGADOR1 And jugador:puntos
         + carta:valor > 100,
     pj:cortar = FALSE );
 
@@ -274,20 +288,89 @@ MakeRule( R5, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
                                                                c2:palo )
         And Not( c1:palo #= c3:palo ) And Not( c3:palo #= c2:palo )
         And c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1
-        And c3:ubicacion #= JUGADOR1 And Null?( c1:grupo )
-        And Null?( c2:grupo ) And Null?( c3:grupo ),
+        And c3:ubicacion #= JUGADOR1,
     {
     jugador:cartas_emparejadas += 3;
     AppendToList( c1:grupo, c2 );
     AppendToList( c1:grupo, c3 );
-    AppendToList( c1:grupo, c2 );
     AppendToList( c2:grupo, c1 );
     AppendToList( c2:grupo, c3 );
-    AppendToList( c3:grupo, c2 );
     AppendToList( c3:grupo, c1 );
+    AppendToList( c3:grupo, c2 );
+    } );
+
+       /*************************************
+        ****  RULE: R6
+        *************************************/
+MakeRule( R6, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
+    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor +
+                                                       2 )
+        And c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo
+        #= c2:palo And c1:ubicacion #= JUGADOR1 And c2:ubicacion
+        #= JUGADOR1 And c3:ubicacion #= JUGADOR1,
+    {
+    jugador:cartas_emparejadas += 3;
+    AppendToList( c1:grupo, c2 );
+    AppendToList( c1:grupo, c3 );
+    AppendToList( c2:grupo, c1 );
+    AppendToList( c2:grupo, c3 );
+    AppendToList( c3:grupo, c1 );
+    AppendToList( c3:grupo, c2 );
     } );
 
 
+       /*************************************
+        ****  RULE: R7
+        *************************************/
+MakeRule( R7, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
+        c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1
+        And c3:ubicacion #= JUGADOR1 And c4:ubicacion #= JUGADOR1 And
+        c1:valor == c2:valor And c1:valor == c3:valor And c1:valor == c4:valor
+        And Not( c1:palo #= c2:palo )
+        And Not( c1:palo #= c3:palo ) 
+        And Not( c1:palo #= c4:palo ) 
+        And Not( c2:palo #= c3:palo ) 
+        And Not( c2:palo #= c4:palo ) 
+        And Not( c3:palo #= c4:palo ),
+    {
+    jugador:cartas_emparejadas += 3;
+    AppendToList( c1:grupo, c2 );
+    AppendToList( c1:grupo, c3 );
+    AppendToList( c1:grupo, c4 );
+    AppendToList( c2:grupo, c1 );
+    AppendToList( c2:grupo, c3 );
+    AppendToList( c2:grupo, c4 );
+    AppendToList( c3:grupo, c1 );
+    AppendToList( c3:grupo, c2 );
+    AppendToList( c3:grupo, c4 );
+    AppendToList( c4:grupo, c1 );
+    AppendToList( c4:grupo, c2 );
+    AppendToList( c4:grupo, c3 );
+    } );
+
+       /*************************************
+        ****  RULE: R8
+        *************************************/
+MakeRule( R8, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
+        c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 ) And c1:valor == ( c4:valor + 3 )
+        And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo #= c4:palo
+        And c1:ubicacion #= JUGADOR1 And c2:ubicacion
+        #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And c4:ubicacion #= JUGADOR1,
+    {
+    jugador:cartas_emparejadas += 3;
+    AppendToList( c1:grupo, c2 );
+    AppendToList( c1:grupo, c3 );
+    AppendToList( c1:grupo, c4 );
+    AppendToList( c2:grupo, c1 );
+    AppendToList( c2:grupo, c3 );
+    AppendToList( c2:grupo, c4 );
+    AppendToList( c3:grupo, c1 );
+    AppendToList( c3:grupo, c2 );
+    AppendToList( c3:grupo, c4 );
+    AppendToList( c4:grupo, c1 );
+    AppendToList( c4:grupo, c2 );
+    AppendToList( c4:grupo, c3 );
+    } );
 
 /*********************************************************/
 /**         ALL GOALS ARE SAVED BELOW             **/
