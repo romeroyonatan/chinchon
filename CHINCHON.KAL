@@ -194,7 +194,7 @@ MakeInstance( o7, Carta );
 o7:palo = oro;
 o7:valor = 7;
 o7:ubicacion = JUGADOR1;
-SetValue( o7:grupo, b7, c7, b7 );
+SetValue( o7:grupo, b7, c7, o6, o5 );
 
        /*************************************
         ****  INSTANCE: o5
@@ -203,6 +203,7 @@ MakeInstance( o5, Carta );
 o5:palo = oro;
 o5:valor = 5;
 o5:ubicacion = JUGADOR1;
+SetValue( o5:grupo, o7, o6 );
 
        /*************************************
         ****  INSTANCE: o6
@@ -211,6 +212,7 @@ MakeInstance( o6, Carta );
 o6:palo = oro;
 o6:valor = 6;
 o6:ubicacion = JUGADOR1;
+SetValue( o6:grupo, o7, o5 );
 
        /*************************************
         ****  INSTANCE: b7
@@ -228,13 +230,13 @@ MakeInstance( c7, Carta );
 c7:palo = copa;
 c7:valor = 7;
 c7:ubicacion = JUGADOR1;
-SetValue( c7:grupo, b7, o7 );
+SetValue( c7:grupo, o7, b7 );
 
        /*************************************
         ****  INSTANCE: j
         *************************************/
 MakeInstance( j, Jugador );
-j:cartas_emparejadas = 3;
+j:cartas_emparejadas = 6;
 
        /*************************************
         ****  INSTANCE: pj
@@ -249,33 +251,33 @@ pj:cortar = FALSE;
 /*********************************************************/
 
        /*************************************
-        ****  RULE: R1
+        ****  RULE: R01
         *************************************/
-MakeRule( R1, [jugador|Jugador carta|Carta pj|PJ],
+MakeRule( R01, [jugador|Jugador carta|Carta pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas == 6 And
         carta:ubicacion #= JUGADOR1 And carta:valor > 5,
     pj:cortar = FALSE );
 
        /*************************************
-        ****  RULE: R2
+        ****  RULE: R02
         *************************************/
-MakeRule( R2, [jugador|Jugador pj|PJ],
+MakeRule( R02, [jugador|Jugador pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas == 7,
     pj:cortar = TRUE );
 
        /*************************************
-        ****  RULE: R3
+        ****  RULE: R03
         *************************************/
-MakeRule( R3, [jugador|Jugador carta|Carta pj|PJ],
+MakeRule( R03, [jugador|Jugador carta|Carta pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas == 6 And
         carta:valor <= 5 And carta:ubicacion #= JUGADOR1 And jugador:puntos
         + carta:valor > 100,
     pj:cortar = FALSE );
 
        /*************************************
-        ****  RULE: R4
+        ****  RULE: R04
         *************************************/
-MakeRule( R4, [jugador|Jugador pj|PJ],
+MakeRule( R04, [jugador|Jugador pj|PJ],
     jugador:numero == 1 And jugador:cartas_emparejadas < 6,
     pj:cortar = FALSE );
 
@@ -318,19 +320,16 @@ MakeRule( R11, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
     AppendToList( c3:grupo, c2 );
     } );
 
-
        /*************************************
         ****  RULE: R12
         *************************************/
 MakeRule( R12, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
-        c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1
-        And c3:ubicacion #= JUGADOR1 And c4:ubicacion #= JUGADOR1 And
-        c1:valor == c2:valor And c1:valor == c3:valor And c1:valor == c4:valor
-        And Not( c1:palo #= c2:palo )
-        And Not( c1:palo #= c3:palo ) 
-        And Not( c1:palo #= c4:palo ) 
-        And Not( c2:palo #= c3:palo ) 
-        And Not( c2:palo #= c4:palo ) 
+    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And
+        c3:ubicacion #= JUGADOR1 And c4:ubicacion #= JUGADOR1
+        And c1:valor == c2:valor And c1:valor == c3:valor And
+        c1:valor == c4:valor And Not( c1:palo #= c2:palo )
+        And Not( c1:palo #= c3:palo ) And Not( c1:palo #= c4:palo )
+        And Not( c2:palo #= c3:palo ) And Not( c2:palo #= c4:palo )
         And Not( c3:palo #= c4:palo ),
     {
     jugador:cartas_emparejadas += 3;
@@ -352,10 +351,12 @@ MakeRule( R12, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
         ****  RULE: R13
         *************************************/
 MakeRule( R13, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
-        c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 ) And c1:valor == ( c4:valor + 3 )
-        And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo #= c4:palo
-        And c1:ubicacion #= JUGADOR1 And c2:ubicacion
-        #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And c4:ubicacion #= JUGADOR1,
+    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor +
+                                                       2 )
+        And c1:valor == ( c4:valor + 3 ) And c1:palo #= c2:palo
+        And c1:palo #= c3:palo And c1:palo #= c4:palo And c1:ubicacion
+        #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion
+        #= JUGADOR1 And c4:ubicacion #= JUGADOR1,
     {
     jugador:cartas_emparejadas += 3;
     AppendToList( c1:grupo, c2 );
@@ -370,6 +371,66 @@ MakeRule( R13, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
     AppendToList( c4:grupo, c1 );
     AppendToList( c4:grupo, c2 );
     AppendToList( c4:grupo, c3 );
+    } );
+
+
+       /*************************************
+        ****  RULE: R14
+        *************************************/
+MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta
+                jugador|Jugador],
+    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 )
+        And c1:valor == ( c4:valor + 3 ) And c1:valor == ( c4:valor + 4 )
+        And c1:valor == ( c4:valor + 5 ) And c1:valor == ( c4:valor + 6 )
+        And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo #= c4:palo 
+        And c1:palo #= c5:palo And c1:palo #= c6:palo And c1:palo #= c7:palo
+        And c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion
+        #= JUGADOR1 And c4:ubicacion #= JUGADOR1  And c5:ubicacion #= JUGADOR1 And
+        c6:ubicacion #= JUGADOR1 And c7:ubicacion #= JUGADOR1,
+    {
+    jugador:cartas_emparejadas += 3;
+    AppendToList( c1:grupo, c2 );
+    AppendToList( c1:grupo, c3 );
+    AppendToList( c1:grupo, c4 );
+    AppendToList( c1:grupo, c5 );
+    AppendToList( c1:grupo, c6 );
+    AppendToList( c1:grupo, c7 );
+    AppendToList( c2:grupo, c1 );
+    AppendToList( c2:grupo, c3 );
+    AppendToList( c2:grupo, c4 );
+    AppendToList( c2:grupo, c5 );
+    AppendToList( c2:grupo, c6 );
+    AppendToList( c2:grupo, c7 );
+    AppendToList( c3:grupo, c1 );
+    AppendToList( c3:grupo, c2 );
+    AppendToList( c3:grupo, c4 );
+    AppendToList( c3:grupo, c5 );
+    AppendToList( c3:grupo, c6 );
+    AppendToList( c3:grupo, c7 );
+    AppendToList( c4:grupo, c1 );
+    AppendToList( c4:grupo, c2 );
+    AppendToList( c4:grupo, c3 );
+    AppendToList( c4:grupo, c5 );
+    AppendToList( c4:grupo, c6 );
+    AppendToList( c4:grupo, c7 );
+    AppendToList( c5:grupo, c1 );
+    AppendToList( c5:grupo, c2 );
+    AppendToList( c5:grupo, c3 );
+    AppendToList( c5:grupo, c4 );
+    AppendToList( c5:grupo, c6 );
+    AppendToList( c5:grupo, c7 );
+    AppendToList( c6:grupo, c1 );
+    AppendToList( c6:grupo, c2 );
+    AppendToList( c6:grupo, c3 );
+    AppendToList( c6:grupo, c4 );
+    AppendToList( c6:grupo, c5 );
+    AppendToList( c6:grupo, c7 );
+    AppendToList( c7:grupo, c1 );
+    AppendToList( c7:grupo, c2 );
+    AppendToList( c7:grupo, c3 );
+    AppendToList( c7:grupo, c4 );
+    AppendToList( c7:grupo, c5 );
+    AppendToList( c7:grupo, c6 );
     } );
 
 /*********************************************************/
