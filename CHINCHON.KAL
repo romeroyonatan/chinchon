@@ -184,7 +184,9 @@ SetSlotOption( PJ:recomendado_a, ALLOWABLE_CLASSES, Jugador );
 SESSION:X = 21;
 SESSION:Y = 121;
 SESSION:Width = 465;
-SESSION:Height = 220;
+SESSION:Height = 427;
+SESSION:Visible = FALSE;
+SESSION:State = HIDDEN;
  ResetWindow (  SESSION  ); 
 
        /*************************************
@@ -244,7 +246,724 @@ j:cartas_emparejadas = 6;
 MakeInstance( pj, PJ );
 pj:cortar = FALSE;
 
+       /*************************************
+        ****  INSTANCE: btn1oro
+        *************************************/
+MakeInstance( btn1oro, Button );
+btn1oro:SessionNumber = 0;
+btn1oro:Title = "1 Oro";
+btn1oro:Visible = TRUE;
+btn1oro:X = 50;
+btn1oro:Y = 26;
+SetValue( btn1oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn1oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn1oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn1oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn1oro  ); 
 
+       /*************************************
+        ****  INSTANCE: btn2oro
+        *************************************/
+MakeInstance( btn2oro, Button );
+btn2oro:SessionNumber = 0;
+btn2oro:Title = "2 Oro";
+btn2oro:Visible = TRUE;
+btn2oro:X = 50;
+btn2oro:Y = 59;
+SetValue( btn2oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn2oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn2oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn2oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn2oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn3oro
+        *************************************/
+MakeInstance( btn3oro, Button );
+btn3oro:SessionNumber = 0;
+btn3oro:Title = "3 Oro";
+btn3oro:Visible = TRUE;
+btn3oro:X = 50;
+btn3oro:Y = 93;
+SetValue( btn3oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn3oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn3oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn3oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn3oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn4oro
+        *************************************/
+MakeInstance( btn4oro, Button );
+btn4oro:SessionNumber = 0;
+btn4oro:Title = "4 Oro";
+btn4oro:Visible = TRUE;
+btn4oro:X = 50;
+btn4oro:Y = 121;
+SetValue( btn4oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn4oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn4oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn4oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn4oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn5oro
+        *************************************/
+MakeInstance( btn5oro, Button );
+btn5oro:SessionNumber = 0;
+btn5oro:Title = "5 Oro";
+btn5oro:Visible = TRUE;
+btn5oro:X = 50;
+btn5oro:Y = 151;
+SetValue( btn5oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn5oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn5oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn5oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn5oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn6oro
+        *************************************/
+MakeInstance( btn6oro, Button );
+btn6oro:SessionNumber = 0;
+btn6oro:Title = "6 Oro";
+btn6oro:Visible = TRUE;
+btn6oro:X = 50;
+btn6oro:Y = 179;
+SetValue( btn6oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn6oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn6oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn6oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn6oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn7oro
+        *************************************/
+MakeInstance( btn7oro, Button );
+btn7oro:SessionNumber = 0;
+btn7oro:Title = "7 Oro";
+btn7oro:Visible = TRUE;
+btn7oro:X = 50;
+btn7oro:Y = 204;
+SetValue( btn7oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn7oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn7oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn7oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn7oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn8oro
+        *************************************/
+MakeInstance( btn8oro, Button );
+btn8oro:SessionNumber = 0;
+btn8oro:Title = "8 Oro";
+btn8oro:Visible = TRUE;
+btn8oro:X = 50;
+btn8oro:Y = 232;
+SetValue( btn8oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn8oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn8oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn8oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn8oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn9oro
+        *************************************/
+MakeInstance( btn9oro, Button );
+btn9oro:SessionNumber = 0;
+btn9oro:Title = "9 Oro";
+btn9oro:Visible = TRUE;
+btn9oro:X = 50;
+btn9oro:Y = 260;
+SetValue( btn9oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn9oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn9oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn9oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn9oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn10oro
+        *************************************/
+MakeInstance( btn10oro, Button );
+btn10oro:SessionNumber = 0;
+btn10oro:Title = "10 Oro";
+btn10oro:Visible = TRUE;
+btn10oro:X = 50;
+btn10oro:Y = 287;
+SetValue( btn10oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn10oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn10oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn10oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn10oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn11oro
+        *************************************/
+MakeInstance( btn11oro, Button );
+btn11oro:SessionNumber = 0;
+btn11oro:Title = "11 Oro";
+btn11oro:Visible = TRUE;
+btn11oro:X = 50;
+btn11oro:Y = 314;
+SetValue( btn11oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn11oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn11oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn11oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn11oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn12oro
+        *************************************/
+MakeInstance( btn12oro, Button );
+btn12oro:SessionNumber = 0;
+btn12oro:Title = "12 Oro";
+btn12oro:Visible = TRUE;
+btn12oro:X = 50;
+btn12oro:Y = 345;
+SetValue( btn12oro:ForegroundColor, 0, 0, 0 );
+SetValue( btn12oro:BackgroundColor, 212, 208, 200 );
+SetValue( btn12oro:ForegroundColor2, 0, 0, 0 );
+SetValue( btn12oro:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn12oro  ); 
+
+       /*************************************
+        ****  INSTANCE: btn1basto
+        *************************************/
+MakeInstance( btn1basto, Button );
+btn1basto:SessionNumber = 0;
+btn1basto:Title = "1 Basto";
+btn1basto:Visible = TRUE;
+btn1basto:X = 160;
+btn1basto:Y = 26;
+SetValue( btn1basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn1basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn1basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn1basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn1basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn2basto
+        *************************************/
+MakeInstance( btn2basto, Button );
+btn2basto:SessionNumber = 0;
+btn2basto:Title = "2 Basto";
+btn2basto:Visible = TRUE;
+btn2basto:X = 160;
+btn2basto:Y = 59;
+SetValue( btn2basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn2basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn2basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn2basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn2basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn3basto
+        *************************************/
+MakeInstance( btn3basto, Button );
+btn3basto:SessionNumber = 0;
+btn3basto:Title = "3 Basto";
+btn3basto:Visible = TRUE;
+btn3basto:X = 160;
+btn3basto:Y = 93;
+SetValue( btn3basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn3basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn3basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn3basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn3basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn4basto
+        *************************************/
+MakeInstance( btn4basto, Button );
+btn4basto:SessionNumber = 0;
+btn4basto:Title = "4 Basto";
+btn4basto:Visible = TRUE;
+btn4basto:X = 160;
+btn4basto:Y = 121;
+SetValue( btn4basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn4basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn4basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn4basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn4basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn5basto
+        *************************************/
+MakeInstance( btn5basto, Button );
+btn5basto:SessionNumber = 0;
+btn5basto:Title = "5 Basto";
+btn5basto:Visible = TRUE;
+btn5basto:X = 160;
+btn5basto:Y = 151;
+SetValue( btn5basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn5basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn5basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn5basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn5basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn6basto
+        *************************************/
+MakeInstance( btn6basto, Button );
+btn6basto:SessionNumber = 0;
+btn6basto:Title = "6 Basto";
+btn6basto:Visible = TRUE;
+btn6basto:X = 160;
+btn6basto:Y = 179;
+SetValue( btn6basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn6basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn6basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn6basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn6basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn7basto
+        *************************************/
+MakeInstance( btn7basto, Button );
+btn7basto:SessionNumber = 0;
+btn7basto:Title = "7 Basto";
+btn7basto:Visible = TRUE;
+btn7basto:X = 160;
+btn7basto:Y = 204;
+SetValue( btn7basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn7basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn7basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn7basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn7basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn8basto
+        *************************************/
+MakeInstance( btn8basto, Button );
+btn8basto:SessionNumber = 0;
+btn8basto:Title = "8 Basto";
+btn8basto:Visible = TRUE;
+btn8basto:X = 160;
+btn8basto:Y = 232;
+SetValue( btn8basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn8basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn8basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn8basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn8basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn9basto
+        *************************************/
+MakeInstance( btn9basto, Button );
+btn9basto:SessionNumber = 0;
+btn9basto:Title = "9 Basto";
+btn9basto:Visible = TRUE;
+btn9basto:X = 160;
+btn9basto:Y = 260;
+SetValue( btn9basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn9basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn9basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn9basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn9basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn10basto
+        *************************************/
+MakeInstance( btn10basto, Button );
+btn10basto:SessionNumber = 0;
+btn10basto:Title = "10 Basto";
+btn10basto:Visible = TRUE;
+btn10basto:X = 160;
+btn10basto:Y = 287;
+SetValue( btn10basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn10basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn10basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn10basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn10basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn11basto
+        *************************************/
+MakeInstance( btn11basto, Button );
+btn11basto:SessionNumber = 0;
+btn11basto:Title = "11 Basto";
+btn11basto:Visible = TRUE;
+btn11basto:X = 160;
+btn11basto:Y = 314;
+SetValue( btn11basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn11basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn11basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn11basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn11basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn12basto
+        *************************************/
+MakeInstance( btn12basto, Button );
+btn12basto:SessionNumber = 0;
+btn12basto:Title = "12 Basto";
+btn12basto:Visible = TRUE;
+btn12basto:X = 160;
+btn12basto:Y = 345;
+SetValue( btn12basto:ForegroundColor, 0, 0, 0 );
+SetValue( btn12basto:BackgroundColor, 212, 208, 200 );
+SetValue( btn12basto:ForegroundColor2, 0, 0, 0 );
+SetValue( btn12basto:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn12basto  ); 
+
+       /*************************************
+        ****  INSTANCE: btn1copa
+        *************************************/
+MakeInstance( btn1copa, Button );
+btn1copa:SessionNumber = 0;
+btn1copa:Title = "1 Copa";
+btn1copa:Visible = TRUE;
+btn1copa:X = 270;
+btn1copa:Y = 26;
+SetValue( btn1copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn1copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn1copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn1copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn1copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn2copa
+        *************************************/
+MakeInstance( btn2copa, Button );
+btn2copa:SessionNumber = 0;
+btn2copa:Title = "2 Copa";
+btn2copa:Visible = TRUE;
+btn2copa:X = 270;
+btn2copa:Y = 59;
+SetValue( btn2copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn2copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn2copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn2copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn2copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn3copa
+        *************************************/
+MakeInstance( btn3copa, Button );
+btn3copa:SessionNumber = 0;
+btn3copa:Title = "3 Copa";
+btn3copa:Visible = TRUE;
+btn3copa:X = 270;
+btn3copa:Y = 93;
+SetValue( btn3copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn3copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn3copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn3copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn3copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn4copa
+        *************************************/
+MakeInstance( btn4copa, Button );
+btn4copa:SessionNumber = 0;
+btn4copa:Title = "4 Copa";
+btn4copa:Visible = TRUE;
+btn4copa:X = 270;
+btn4copa:Y = 121;
+SetValue( btn4copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn4copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn4copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn4copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn4copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn5copa
+        *************************************/
+MakeInstance( btn5copa, Button );
+btn5copa:SessionNumber = 0;
+btn5copa:Title = "5 Copa";
+btn5copa:Visible = TRUE;
+btn5copa:X = 270;
+btn5copa:Y = 151;
+SetValue( btn5copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn5copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn5copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn5copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn5copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn6copa
+        *************************************/
+MakeInstance( btn6copa, Button );
+btn6copa:SessionNumber = 0;
+btn6copa:Title = "6 Copa";
+btn6copa:Visible = TRUE;
+btn6copa:X = 270;
+btn6copa:Y = 179;
+SetValue( btn6copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn6copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn6copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn6copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn6copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn7copa
+        *************************************/
+MakeInstance( btn7copa, Button );
+btn7copa:SessionNumber = 0;
+btn7copa:Title = "7 Copa";
+btn7copa:Visible = TRUE;
+btn7copa:X = 270;
+btn7copa:Y = 204;
+SetValue( btn7copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn7copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn7copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn7copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn7copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn8copa
+        *************************************/
+MakeInstance( btn8copa, Button );
+btn8copa:SessionNumber = 0;
+btn8copa:Title = "8 Copa";
+btn8copa:Visible = TRUE;
+btn8copa:X = 270;
+btn8copa:Y = 232;
+SetValue( btn8copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn8copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn8copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn8copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn8copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn9copa
+        *************************************/
+MakeInstance( btn9copa, Button );
+btn9copa:SessionNumber = 0;
+btn9copa:Title = "9 Copa";
+btn9copa:Visible = TRUE;
+btn9copa:X = 270;
+btn9copa:Y = 260;
+SetValue( btn9copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn9copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn9copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn9copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn9copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn10copa
+        *************************************/
+MakeInstance( btn10copa, Button );
+btn10copa:SessionNumber = 0;
+btn10copa:Title = "10 Copa";
+btn10copa:Visible = TRUE;
+btn10copa:X = 270;
+btn10copa:Y = 287;
+SetValue( btn10copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn10copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn10copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn10copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn10copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn11copa
+        *************************************/
+MakeInstance( btn11copa, Button );
+btn11copa:SessionNumber = 0;
+btn11copa:Title = "11 Copa";
+btn11copa:Visible = TRUE;
+btn11copa:X = 270;
+btn11copa:Y = 314;
+SetValue( btn11copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn11copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn11copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn11copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn11copa  ); 
+
+       /*************************************
+        ****  INSTANCE: btn12copa
+        *************************************/
+MakeInstance( btn12copa, Button );
+btn12copa:SessionNumber = 0;
+btn12copa:Title = "12 Copa";
+btn12copa:Visible = TRUE;
+btn12copa:X = 270;
+btn12copa:Y = 345;
+SetValue( btn12copa:ForegroundColor, 0, 0, 0 );
+SetValue( btn12copa:BackgroundColor, 212, 208, 200 );
+SetValue( btn12copa:ForegroundColor2, 0, 0, 0 );
+SetValue( btn12copa:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn12copa  ); 
+       /*************************************
+        ****  INSTANCE: btn1espada
+        *************************************/
+MakeInstance( btn1espada, Button );
+btn1espada:SessionNumber = 0;
+btn1espada:Title = "1 Espada";
+btn1espada:Visible = TRUE;
+btn1espada:X = 380;
+btn1espada:Y = 26;
+SetValue( btn1espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn1espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn1espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn1espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn1espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn2espada
+        *************************************/
+MakeInstance( btn2espada, Button );
+btn2espada:SessionNumber = 0;
+btn2espada:Title = "2 Espada";
+btn2espada:Visible = TRUE;
+btn2espada:X = 380;
+btn2espada:Y = 59;
+SetValue( btn2espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn2espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn2espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn2espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn2espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn3espada
+        *************************************/
+MakeInstance( btn3espada, Button );
+btn3espada:SessionNumber = 0;
+btn3espada:Title = "3 Espada";
+btn3espada:Visible = TRUE;
+btn3espada:X = 380;
+btn3espada:Y = 93;
+SetValue( btn3espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn3espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn3espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn3espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn3espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn4espada
+        *************************************/
+MakeInstance( btn4espada, Button );
+btn4espada:SessionNumber = 0;
+btn4espada:Title = "4 Espada";
+btn4espada:Visible = TRUE;
+btn4espada:X = 380;
+btn4espada:Y = 121;
+SetValue( btn4espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn4espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn4espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn4espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn4espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn5espada
+        *************************************/
+MakeInstance( btn5espada, Button );
+btn5espada:SessionNumber = 0;
+btn5espada:Title = "5 Espada";
+btn5espada:Visible = TRUE;
+btn5espada:X = 380;
+btn5espada:Y = 151;
+SetValue( btn5espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn5espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn5espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn5espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn5espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn6espada
+        *************************************/
+MakeInstance( btn6espada, Button );
+btn6espada:SessionNumber = 0;
+btn6espada:Title = "6 Espada";
+btn6espada:Visible = TRUE;
+btn6espada:X = 380;
+btn6espada:Y = 179;
+SetValue( btn6espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn6espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn6espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn6espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn6espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn7espada
+        *************************************/
+MakeInstance( btn7espada, Button );
+btn7espada:SessionNumber = 0;
+btn7espada:Title = "7 Espada";
+btn7espada:Visible = TRUE;
+btn7espada:X = 380;
+btn7espada:Y = 204;
+SetValue( btn7espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn7espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn7espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn7espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn7espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn8espada
+        *************************************/
+MakeInstance( btn8espada, Button );
+btn8espada:SessionNumber = 0;
+btn8espada:Title = "8 Espada";
+btn8espada:Visible = TRUE;
+btn8espada:X = 380;
+btn8espada:Y = 232;
+SetValue( btn8espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn8espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn8espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn8espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn8espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn9espada
+        *************************************/
+MakeInstance( btn9espada, Button );
+btn9espada:SessionNumber = 0;
+btn9espada:Title = "9 Espada";
+btn9espada:Visible = TRUE;
+btn9espada:X = 380;
+btn9espada:Y = 260;
+SetValue( btn9espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn9espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn9espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn9espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn9espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn10espada
+        *************************************/
+MakeInstance( btn10espada, Button );
+btn10espada:SessionNumber = 0;
+btn10espada:Title = "10 Espada";
+btn10espada:Visible = TRUE;
+btn10espada:X = 380;
+btn10espada:Y = 287;
+SetValue( btn10espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn10espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn10espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn10espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn10espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn11espada
+        *************************************/
+MakeInstance( btn11espada, Button );
+btn11espada:SessionNumber = 0;
+btn11espada:Title = "11 Espada";
+btn11espada:Visible = TRUE;
+btn11espada:X = 380;
+btn11espada:Y = 314;
+SetValue( btn11espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn11espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn11espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn11espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn11espada  ); 
+
+       /*************************************
+        ****  INSTANCE: btn12espada
+        *************************************/
+MakeInstance( btn12espada, Button );
+btn12espada:SessionNumber = 0;
+btn12espada:Title = "12 Espada";
+btn12espada:Visible = TRUE;
+btn12espada:X = 380;
+btn12espada:Y = 345;
+SetValue( btn12espada:ForegroundColor, 0, 0, 0 );
+SetValue( btn12espada:BackgroundColor, 212, 208, 200 );
+SetValue( btn12espada:ForegroundColor2, 0, 0, 0 );
+SetValue( btn12espada:BackgroundColor2, 255, 255, 255 );
+ ResetImage (  btn12espada  ); 
 
 /*********************************************************/
 /**         ALL RULES ARE SAVED BELOW             **/
@@ -373,20 +1092,24 @@ MakeRule( R13, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
     AppendToList( c4:grupo, c3 );
     } );
 
-
        /*************************************
         ****  RULE: R14
         *************************************/
-MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta
-                jugador|Jugador],
-    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 )
-        And c1:valor == ( c4:valor + 3 ) And c1:valor == ( c4:valor + 4 )
-        And c1:valor == ( c4:valor + 5 ) And c1:valor == ( c4:valor + 6 )
-        And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo #= c4:palo 
-        And c1:palo #= c5:palo And c1:palo #= c6:palo And c1:palo #= c7:palo
-        And c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion
-        #= JUGADOR1 And c4:ubicacion #= JUGADOR1  And c5:ubicacion #= JUGADOR1 And
-        c6:ubicacion #= JUGADOR1 And c7:ubicacion #= JUGADOR1,
+MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta jugador|Jugador],
+    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor +
+                                                       2 )
+        And c1:valor == ( c4:valor + 3 ) And c1:valor == ( c4:valor
+                                                               +
+                                                               4 )
+        And c1:valor == ( c4:valor + 5 ) And c1:valor == ( c4:valor
+                                                               +
+                                                               6 )
+        And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo
+        #= c4:palo And c1:palo #= c5:palo And c1:palo #= c6:palo
+        And c1:palo #= c7:palo And c1:ubicacion #= JUGADOR1 And
+        c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1
+        And c4:ubicacion #= JUGADOR1 And c5:ubicacion #= JUGADOR1
+        And c6:ubicacion #= JUGADOR1 And c7:ubicacion #= JUGADOR1,
     {
     jugador:cartas_emparejadas += 3;
     AppendToList( c1:grupo, c2 );
@@ -432,6 +1155,8 @@ MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta
     AppendToList( c7:grupo, c5 );
     AppendToList( c7:grupo, c6 );
     } );
+
+
 
 /*********************************************************/
 /**         ALL GOALS ARE SAVED BELOW             **/
