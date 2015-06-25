@@ -288,6 +288,54 @@ o12:valor = 12;
 o12:ubicacion = MAZO_LEVANTE;
 
        /*************************************
+        ****  INSTANCE: b1
+        *************************************/
+MakeInstance( b1, Carta );
+b1:palo = basto;
+b1:valor = 1;
+b1:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: b2
+        *************************************/
+MakeInstance( b2, Carta );
+b2:palo = basto;
+b2:valor = 2;
+b2:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: b3
+        *************************************/
+MakeInstance( b3, Carta );
+b3:palo = basto;
+b3:valor = 3;
+b3:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: b4
+        *************************************/
+MakeInstance( b4, Carta );
+b4:palo = basto;
+b4:valor = 4;
+b4:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: b5
+        *************************************/
+MakeInstance( b5, Carta );
+b5:palo = basto;
+b5:valor = 5;
+b5:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: b6
+        *************************************/
+MakeInstance( b6, Carta );
+b6:palo = basto;
+b6:valor = 6;
+b6:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
         ****  INSTANCE: b7
         *************************************/
 MakeInstance( b7, Carta );
@@ -296,12 +344,224 @@ b7:valor = 7;
 b7:ubicacion = MAZO_LEVANTE;
 
        /*************************************
+        ****  INSTANCE: b8
+        *************************************/
+MakeInstance( b8, Carta );
+b8:palo = basto;
+b8:valor = 8;
+b8:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: b9
+        *************************************/
+MakeInstance( b9, Carta );
+b9:palo = basto;
+b9:valor = 9;
+b9:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: b10
+        *************************************/
+MakeInstance( b10, Carta );
+b10:palo = basto;
+b10:valor = 10;
+b10:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: b11
+        *************************************/
+MakeInstance( b11, Carta );
+b11:palo = basto;
+b11:valor = 11;
+b11:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: b12
+        *************************************/
+MakeInstance( b12, Carta );
+b12:palo = basto;
+b12:valor = 12;
+b12:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e1
+        *************************************/
+MakeInstance( e1, Carta );
+e1:palo = espada;
+e1:valor = 1;
+e1:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e2
+        *************************************/
+MakeInstance( e2, Carta );
+e2:palo = espada;
+e2:valor = 2;
+e2:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e3
+        *************************************/
+MakeInstance( e3, Carta );
+e3:palo = espada;
+e3:valor = 3;
+e3:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e4
+        *************************************/
+MakeInstance( e4, Carta );
+e4:palo = espada;
+e4:valor = 4;
+e4:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e5
+        *************************************/
+MakeInstance( e5, Carta );
+e5:palo = espada;
+e5:valor = 5;
+e5:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e6
+        *************************************/
+MakeInstance( e6, Carta );
+e6:palo = espada;
+e6:valor = 6;
+e6:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e7
+        *************************************/
+MakeInstance( e7, Carta );
+e7:palo = espada;
+e7:valor = 7;
+e7:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: e8
+        *************************************/
+MakeInstance( e8, Carta );
+e8:palo = espada;
+e8:valor = 8;
+e8:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: e9
+        *************************************/
+MakeInstance( e9, Carta );
+e9:palo = espada;
+e9:valor = 9;
+e9:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: e10
+        *************************************/
+MakeInstance( e10, Carta );
+e10:palo = espada;
+e10:valor = 10;
+e10:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: e11
+        *************************************/
+MakeInstance( e11, Carta );
+e11:palo = espada;
+e11:valor = 11;
+e11:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: e12
+        *************************************/
+MakeInstance( e12, Carta );
+e12:palo = espada;
+e12:valor = 12;
+e12:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: c1
+        *************************************/
+MakeInstance( c1, Carta );
+c1:palo = copa;
+c1:valor = 1;
+c1:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: c2
+        *************************************/
+MakeInstance( c2, Carta );
+c2:palo = copa;
+c2:valor = 2;
+c2:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: c3
+        *************************************/
+MakeInstance( c3, Carta );
+c3:palo = copa;
+c3:valor = 3;
+c3:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: c4
+        *************************************/
+MakeInstance( c4, Carta );
+c4:palo = copa;
+c4:valor = 4;
+c4:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: c5
+        *************************************/
+MakeInstance( c5, Carta );
+c5:palo = copa;
+c5:valor = 5;
+c5:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: c6
+        *************************************/
+MakeInstance( c6, Carta );
+c6:palo = copa;
+c6:valor = 6;
+c6:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
         ****  INSTANCE: c7
         *************************************/
 MakeInstance( c7, Carta );
 c7:palo = copa;
 c7:valor = 7;
 c7:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: c8
+        *************************************/
+MakeInstance( c8, Carta );
+c8:palo = copa;
+c8:valor = 8;
+c8:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: c9
+        *************************************/
+MakeInstance( c9, Carta );
+c9:palo = copa;
+c9:valor = 9;
+c9:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: c10
+        *************************************/
+MakeInstance( c10, Carta );
+c10:palo = copa;
+c10:valor = 10;
+c10:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: c11
+        *************************************/
+MakeInstance( c11, Carta );
+c11:palo = copa;
+c11:valor = 11;
+c11:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: c12
+        *************************************/
+MakeInstance( c12, Carta );
+c12:palo = copa;
+c12:valor = 12;
+c12:ubicacion = MAZO_LEVANTE;
 
        /*************************************
         ****  INSTANCE: j
