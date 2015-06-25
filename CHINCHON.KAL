@@ -5,6 +5,12 @@
 /**         ALL FUNCTIONS ARE SAVED BELOW             **/
 /*********************************************************/
 
+       /*************************************
+        ****  FUNCTION: seleccionar_cartas
+        *************************************/
+MakeFunction( seleccionar_cartas, [boton],
+PostMessage(boton:carta:valor # boton:carta:palo) );
+
 
 
 /*********************************************************/
@@ -181,22 +187,45 @@ SetSlotOption( PJ:recomendado_a, ALLOWABLE_CLASSES, Jugador );
        /*************************************
         ****  INSTANCE: SESSION
         *************************************/
-SESSION:X = 21;
-SESSION:Y = 121;
-SESSION:Width = 465;
-SESSION:Height = 427;
-SESSION:Visible = FALSE;
-SESSION:State = HIDDEN;
+SESSION:X = 172;
+SESSION:Y = 46;
+SESSION:Width = 516;
+SESSION:Height = 476;
+SESSION:Visible = TRUE;
+SESSION:State = NORM;
  ResetWindow (  SESSION  ); 
 
        /*************************************
-        ****  INSTANCE: o7
+        ****  INSTANCE: o1
         *************************************/
-MakeInstance( o7, Carta );
-o7:palo = oro;
-o7:valor = 7;
-o7:ubicacion = JUGADOR1;
-SetValue( o7:grupo, b7, c7, o6, o5 );
+MakeInstance( o1, Carta );
+o1:palo = oro;
+o1:valor = 1;
+o1:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: o2
+        *************************************/
+MakeInstance( o2, Carta );
+o2:palo = oro;
+o2:valor = 2;
+o2:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: o3
+        *************************************/
+MakeInstance( o3, Carta );
+o3:palo = oro;
+o3:valor = 3;
+o3:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: o4
+        *************************************/
+MakeInstance( o4, Carta );
+o4:palo = oro;
+o4:valor = 4;
+o4:ubicacion = MAZO_LEVANTE;
 
        /*************************************
         ****  INSTANCE: o5
@@ -204,8 +233,7 @@ SetValue( o7:grupo, b7, c7, o6, o5 );
 MakeInstance( o5, Carta );
 o5:palo = oro;
 o5:valor = 5;
-o5:ubicacion = JUGADOR1;
-SetValue( o5:grupo, o7, o6 );
+o5:ubicacion = MAZO_LEVANTE;
 
        /*************************************
         ****  INSTANCE: o6
@@ -213,8 +241,51 @@ SetValue( o5:grupo, o7, o6 );
 MakeInstance( o6, Carta );
 o6:palo = oro;
 o6:valor = 6;
-o6:ubicacion = JUGADOR1;
-SetValue( o6:grupo, o7, o5 );
+o6:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: o7
+        *************************************/
+MakeInstance( o7, Carta );
+o7:palo = oro;
+o7:valor = 7;
+o7:ubicacion = MAZO_LEVANTE;
+
+       /*************************************
+        ****  INSTANCE: o8
+        *************************************/
+MakeInstance( o8, Carta );
+o8:palo = oro;
+o8:valor = 8;
+o8:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: o9
+        *************************************/
+MakeInstance( o9, Carta );
+o9:palo = oro;
+o9:valor = 9;
+o9:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: o10
+        *************************************/
+MakeInstance( o10, Carta );
+o10:palo = oro;
+o10:valor = 10;
+o10:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: o11
+        *************************************/
+MakeInstance( o11, Carta );
+o11:palo = oro;
+o11:valor = 11;
+o11:ubicacion = MAZO_LEVANTE;
+       /*************************************
+        ****  INSTANCE: o12
+        *************************************/
+MakeInstance( o12, Carta );
+o12:palo = oro;
+o12:valor = 12;
+o12:ubicacion = MAZO_LEVANTE;
 
        /*************************************
         ****  INSTANCE: b7
@@ -222,8 +293,7 @@ SetValue( o6:grupo, o7, o5 );
 MakeInstance( b7, Carta );
 b7:palo = basto;
 b7:valor = 7;
-b7:ubicacion = JUGADOR1;
-SetValue( b7:grupo, o7, c7 );
+b7:ubicacion = MAZO_LEVANTE;
 
        /*************************************
         ****  INSTANCE: c7
@@ -231,14 +301,13 @@ SetValue( b7:grupo, o7, c7 );
 MakeInstance( c7, Carta );
 c7:palo = copa;
 c7:valor = 7;
-c7:ubicacion = JUGADOR1;
-SetValue( c7:grupo, o7, b7 );
+c7:ubicacion = MAZO_LEVANTE;
 
        /*************************************
         ****  INSTANCE: j
         *************************************/
 MakeInstance( j, Jugador );
-j:cartas_emparejadas = 6;
+j:cartas_emparejadas = 0;
 
        /*************************************
         ****  INSTANCE: pj
@@ -259,6 +328,11 @@ SetValue( btn1oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn1oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn1oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn1oro:BackgroundColor2, 255, 255, 255 );
+btn1oro:Action = seleccionar_cartas;
+MakeSlot( btn1oro:carta );
+SetSlotOption( btn1oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn1oro:carta, ALLOWABLE_CLASSES, Carta );
+btn1oro:carta = o1;
  ResetImage (  btn1oro  ); 
 
        /*************************************
@@ -274,6 +348,11 @@ SetValue( btn2oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn2oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn2oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn2oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn2oro:carta );
+SetSlotOption( btn2oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn2oro:carta, ALLOWABLE_CLASSES, Carta );
+btn2oro:carta = o2;
+btn2oro:Action = seleccionar_cartas;
  ResetImage (  btn2oro  ); 
 
        /*************************************
@@ -289,6 +368,11 @@ SetValue( btn3oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn3oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn3oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn3oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn3oro:carta );
+SetSlotOption( btn3oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn3oro:carta, ALLOWABLE_CLASSES, Carta );
+btn3oro:carta = o3;
+btn3oro:Action = seleccionar_cartas;
  ResetImage (  btn3oro  ); 
 
        /*************************************
@@ -304,6 +388,11 @@ SetValue( btn4oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn4oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn4oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn4oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn4oro:carta );
+SetSlotOption( btn4oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn4oro:carta, ALLOWABLE_CLASSES, Carta );
+btn4oro:carta = o4;
+btn4oro:Action = seleccionar_cartas;
  ResetImage (  btn4oro  ); 
 
        /*************************************
@@ -319,6 +408,11 @@ SetValue( btn5oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn5oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn5oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn5oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn5oro:carta );
+SetSlotOption( btn5oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn5oro:carta, ALLOWABLE_CLASSES, Carta );
+btn5oro:carta = o5;
+btn5oro:Action = seleccionar_cartas;
  ResetImage (  btn5oro  ); 
 
        /*************************************
@@ -334,6 +428,11 @@ SetValue( btn6oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn6oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn6oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn6oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn6oro:carta );
+SetSlotOption( btn6oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn6oro:carta, ALLOWABLE_CLASSES, Carta );
+btn6oro:carta = o6;
+btn6oro:Action = seleccionar_cartas;
  ResetImage (  btn6oro  ); 
 
        /*************************************
@@ -349,6 +448,11 @@ SetValue( btn7oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn7oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn7oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn7oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn7oro:carta );
+SetSlotOption( btn7oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn7oro:carta, ALLOWABLE_CLASSES, Carta );
+btn7oro:carta = o7;
+btn7oro:Action = seleccionar_cartas;
  ResetImage (  btn7oro  ); 
 
        /*************************************
@@ -364,6 +468,11 @@ SetValue( btn8oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn8oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn8oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn8oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn8oro:carta );
+SetSlotOption( btn8oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn8oro:carta, ALLOWABLE_CLASSES, Carta );
+btn8oro:carta = o8;
+btn8oro:Action = seleccionar_cartas;
  ResetImage (  btn8oro  ); 
 
        /*************************************
@@ -379,6 +488,11 @@ SetValue( btn9oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn9oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn9oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn9oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn9oro:carta );
+SetSlotOption( btn9oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn9oro:carta, ALLOWABLE_CLASSES, Carta );
+btn9oro:carta = o9;
+btn9oro:Action = seleccionar_cartas;
  ResetImage (  btn9oro  ); 
 
        /*************************************
@@ -394,6 +508,11 @@ SetValue( btn10oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn10oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn10oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn10oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn10oro:carta );
+SetSlotOption( btn10oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn10oro:carta, ALLOWABLE_CLASSES, Carta );
+btn10oro:carta = o10;
+btn10oro:Action = seleccionar_cartas;
  ResetImage (  btn10oro  ); 
 
        /*************************************
@@ -409,6 +528,11 @@ SetValue( btn11oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn11oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn11oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn11oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn11oro:carta );
+SetSlotOption( btn11oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn11oro:carta, ALLOWABLE_CLASSES, Carta );
+btn11oro:carta = o11;
+btn11oro:Action = seleccionar_cartas;
  ResetImage (  btn11oro  ); 
 
        /*************************************
@@ -424,6 +548,11 @@ SetValue( btn12oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn12oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn12oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12oro:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn12oro:carta );
+SetSlotOption( btn12oro:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn12oro:carta, ALLOWABLE_CLASSES, Carta );
+btn12oro:carta = o12;
+btn12oro:Action = seleccionar_cartas;
  ResetImage (  btn12oro  ); 
 
        /*************************************
@@ -785,6 +914,7 @@ SetValue( btn12copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn12copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12copa:BackgroundColor2, 255, 255, 255 );
  ResetImage (  btn12copa  ); 
+
        /*************************************
         ****  INSTANCE: btn1espada
         *************************************/
@@ -964,6 +1094,83 @@ SetValue( btn12espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn12espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12espada:BackgroundColor2, 255, 255, 255 );
  ResetImage (  btn12espada  ); 
+
+       /*************************************
+        ****  INSTANCE: txtLevantar
+        *************************************/
+MakeInstance( txtLevantar, Text );
+txtLevantar:SessionNumber = 0;
+txtLevantar:Title = Levantar;
+txtLevantar:Visible = TRUE;
+txtLevantar:X = 27;
+txtLevantar:Y = 388;
+SetValue( txtLevantar:ForegroundColor, 0, 0, 0 );
+SetValue( txtLevantar:BackgroundColor, 255, 255, 255 );
+SetValue( txtLevantar:ForegroundColor2, 0, 0, 0 );
+SetValue( txtLevantar:BackgroundColor2, 255, 255, 255 );
+txtLevantar:Width = 100;
+txtLevantar:Height = 25;
+ ResetImage (  txtLevantar  ); 
+
+       /*************************************
+        ****  INSTANCE: txtCortar
+        *************************************/
+MakeInstance( txtCortar, Text );
+txtCortar:SessionNumber = 0;
+txtCortar:Title = Cortar;
+txtCortar:Visible = TRUE;
+txtCortar:X = 163;
+txtCortar:Y = 388;
+SetValue( txtCortar:ForegroundColor, 0, 0, 0 );
+SetValue( txtCortar:BackgroundColor, 255, 255, 255 );
+SetValue( txtCortar:ForegroundColor2, 0, 0, 0 );
+SetValue( txtCortar:BackgroundColor2, 255, 255, 255 );
+txtCortar:Width = 100;
+txtCortar:Height = 25;
+ ResetImage (  txtCortar  ); 
+
+       /*************************************
+        ****  INSTANCE: txtTirar
+        *************************************/
+MakeInstance( txtTirar, Text );
+txtTirar:SessionNumber = 0;
+txtTirar:Title = Tirar;
+txtTirar:Visible = TRUE;
+txtTirar:X = 278;
+txtTirar:Y = 388;
+SetValue( txtTirar:ForegroundColor, 0, 0, 0 );
+SetValue( txtTirar:BackgroundColor, 255, 255, 255 );
+SetValue( txtTirar:ForegroundColor2, 0, 0, 0 );
+SetValue( txtTirar:BackgroundColor2, 255, 255, 255 );
+txtTirar:Width = 100;
+txtTirar:Height = 25;
+ ResetImage (  txtTirar  ); 
+
+       /*************************************
+        ****  INSTANCE: txtAyuda
+        *************************************/
+MakeInstance( txtAyuda, Text );
+txtAyuda:SessionNumber = 0;
+txtAyuda:Title = "Seleccione cartas en mano";
+txtAyuda:Visible = TRUE;
+txtAyuda:X = 48;
+txtAyuda:Y = 2;
+SetValue( txtAyuda:ForegroundColor, 0, 0, 0 );
+SetValue( txtAyuda:BackgroundColor, 255, 255, 255 );
+SetValue( txtAyuda:ForegroundColor2, 0, 0, 0 );
+SetValue( txtAyuda:BackgroundColor2, 255, 255, 255 );
+txtAyuda:Width = 423;
+txtAyuda:Height = 22;
+txtAyuda:Font = "MS Sans Serif";
+txtAyuda:TextSize = 14;
+txtAyuda:Bold = TRUE;
+txtAyuda:Underline = FALSE;
+txtAyuda:Italic = FALSE;
+txtAyuda:StrikeOut = FALSE;
+txtAyuda:Justification = CENTER;
+ ResetImage (  txtAyuda  ); 
+
+
 
 /*********************************************************/
 /**         ALL RULES ARE SAVED BELOW             **/
