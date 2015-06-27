@@ -8,8 +8,21 @@
        /*************************************
         ****  FUNCTION: seleccionar_cartas
         *************************************/
-MakeFunction( seleccionar_cartas, [boton],
-PostMessage(boton:carta:valor # boton:carta:palo) );
+MakeFunction( seleccionar_cartas, [boton], {
+    /* Jugador selecciona sus cartas */
+    If (LengthList(j:posee) < 7) Then {
+        boton:carta:ubicacion = JUGADOR_1;
+        AppendToList(j:posee, boton:carta);
+        SetValue( boton:BackgroundColor, 112, 219, 147 );
+        If (LengthList(j:posee) == 7) Then {
+            SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
+            ResetImage(txtAyuda);
+        }
+    } Else {
+        boton:carta:ubicacion = MAZO_DESCARTE;
+        SetValue( boton:BackgroundColor, 255, 127, 80 );
+    }
+});
 
 
 
