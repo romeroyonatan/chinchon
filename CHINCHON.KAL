@@ -9,6 +9,14 @@
         ****  FUNCTION: seleccionar_cartas
         *************************************/
 MakeFunction( seleccionar_cartas, [boton], {
+    /* saco boton rojo anterior */
+    EnumList( Button:InstanceList, b, {
+      If (b:carta:ubicacion #= MAZO_DESCARTE) Then {
+        SetValue ( b:BackgroundColor, 212, 208, 200 );
+        SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
+        ResetImage (b);
+      }
+    });
     /* Jugador selecciona sus cartas */
     If (LengthList(j:posee) < 7) Then {
         boton:carta:ubicacion = JUGADOR_1;
@@ -18,9 +26,30 @@ MakeFunction( seleccionar_cartas, [boton], {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
             ResetImage(txtAyuda);
         }
+
+    /* seleccion de carta en mazo de descarte */
     } Else {
         boton:carta:ubicacion = MAZO_DESCARTE;
         SetValue( boton:BackgroundColor, 255, 127, 80 );
+        /* efectuo cambios de jugada anterior */
+        If (Not (Null? (pj:carta) ) ) Then {
+            /* reseteo valores de la instancia carta */
+            SetValue (pj:carta:ubicacion, MAZO_LEVANTE);
+            ClearList (pj:carta:grupo);
+            SetValue (pj:carta:prioridad, 0);
+            
+        };
+        /* inicio inferencia de proxima jugada */
+        ForwardChain([NOASSERT], NULL, R01, R02, R03, R04);
+        /* muestro resultados de la inferencia al usuario */
+        SetValue(txtLevantar:Title, "Levantar: " # pj:mazo);
+        SetValue(txtCortar:Title, "Cortar: " # pj:cortar);
+        If (Not (Null? (pj:carta) ) ) Then
+          SetValue(txtTirar:Title,"Tirar: " # pj:carta:valor # " de " # 
+                                              pj:carta:palo);
+        ResetImage(txtLevantar);
+        ResetImage(txtTirar);
+        ResetImage(txtCortar);
     }
 });
 
@@ -182,6 +211,7 @@ ClearList( Carta:grupo );
 MakeClass( PJ, Root );
 MakeSlot( PJ:mazo );
 SetSlotOption( PJ:mazo, ALLOWABLE_VALUES, MAZO_DESCARTE, MAZO_LEVANTE );
+PJ:mazo = MAZO_LEVANTE;
 MakeSlot( PJ:carta );
 SetSlotOption( PJ:carta, VALUE_TYPE, OBJECT );
 SetSlotOption( PJ:carta, ALLOWABLE_CLASSES, Carta );
@@ -192,6 +222,8 @@ SetSlotOption( PJ:recomendado_a, VALUE_TYPE, OBJECT );
 SetSlotOption( PJ:recomendado_a, ALLOWABLE_CLASSES, Jugador );
 
 
+MakeSlot( Button, InstanceList );
+SetSlotOption( Button, InstanceList, MULTIPLE );
 
 /*********************************************************/
 /**         ALL INSTANCES ARE SAVED BELOW             **/
@@ -964,7 +996,7 @@ SetValue( btn7basto:BackgroundColor2, 255, 255, 255 );
 MakeSlot( btn7basto:carta );
 SetSlotOption( btn7basto:carta, VALUE_TYPE, OBJECT );
 SetSlotOption( btn7basto:carta, ALLOWABLE_CLASSES, Carta );
-btn7basto:carta = o10;
+btn7basto:carta = b7;
 btn7basto:Action = seleccionar_cartas;
  ResetImage (  btn7basto  ); 
 
@@ -1444,7 +1476,7 @@ SetValue( btn7espada:BackgroundColor2, 255, 255, 255 );
 MakeSlot( btn7espada:carta );
 SetSlotOption( btn7espada:carta, VALUE_TYPE, OBJECT );
 SetSlotOption( btn7espada:carta, ALLOWABLE_CLASSES, Carta );
-btn7espada:carta = e1;
+btn7espada:carta = e7;
 btn7espada:Action = seleccionar_cartas;
  ResetImage (  btn7espada  ); 
 
@@ -1555,14 +1587,15 @@ MakeInstance( txtLevantar, Text );
 txtLevantar:SessionNumber = 0;
 txtLevantar:Title = Levantar;
 txtLevantar:Visible = TRUE;
-txtLevantar:X = 27;
+txtLevantar:X = 20;
 txtLevantar:Y = 388;
 SetValue( txtLevantar:ForegroundColor, 0, 0, 0 );
 SetValue( txtLevantar:BackgroundColor, 255, 255, 255 );
 SetValue( txtLevantar:ForegroundColor2, 0, 0, 0 );
 SetValue( txtLevantar:BackgroundColor2, 255, 255, 255 );
-txtLevantar:Width = 100;
+txtLevantar:Width = 170;
 txtLevantar:Height = 25;
+txtLevantar:Justification = LEFT;
  ResetImage (  txtLevantar  ); 
 
        /*************************************
@@ -1572,7 +1605,7 @@ MakeInstance( txtCortar, Text );
 txtCortar:SessionNumber = 0;
 txtCortar:Title = Cortar;
 txtCortar:Visible = TRUE;
-txtCortar:X = 163;
+txtCortar:X = 200;
 txtCortar:Y = 388;
 SetValue( txtCortar:ForegroundColor, 0, 0, 0 );
 SetValue( txtCortar:BackgroundColor, 255, 255, 255 );
@@ -1580,6 +1613,7 @@ SetValue( txtCortar:ForegroundColor2, 0, 0, 0 );
 SetValue( txtCortar:BackgroundColor2, 255, 255, 255 );
 txtCortar:Width = 100;
 txtCortar:Height = 25;
+txtCortar:Justification = LEFT;
  ResetImage (  txtCortar  ); 
 
        /*************************************
@@ -1589,7 +1623,7 @@ MakeInstance( txtTirar, Text );
 txtTirar:SessionNumber = 0;
 txtTirar:Title = Tirar;
 txtTirar:Visible = TRUE;
-txtTirar:X = 278;
+txtTirar:X = 300;
 txtTirar:Y = 388;
 SetValue( txtTirar:ForegroundColor, 0, 0, 0 );
 SetValue( txtTirar:BackgroundColor, 255, 255, 255 );
@@ -1597,6 +1631,7 @@ SetValue( txtTirar:ForegroundColor2, 0, 0, 0 );
 SetValue( txtTirar:BackgroundColor2, 255, 255, 255 );
 txtTirar:Width = 100;
 txtTirar:Height = 25;
+txtTirar:Justification = LEFT;
  ResetImage (  txtTirar  ); 
 
        /*************************************
@@ -1624,7 +1659,7 @@ txtAyuda:Justification = CENTER;
  ResetImage (  txtAyuda  ); 
 
 
-
+GetInstanceList (Button, Button:InstanceList);
 /*********************************************************/
 /**         ALL RULES ARE SAVED BELOW             **/
 /*********************************************************/
