@@ -17,14 +17,14 @@ MakeFunction( seleccionar_cartas, [boton], {
         If (LengthList(j:posee) == 7) Then {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
             ResetImage(txtAyuda);
-            SetValue (pj:mazo, Null); /* fuerzo a que no exista prox jugada */
+            SetValue (pj:mazo, NULL); /* fuerzo a que no exista prox jugada */
         }
 
     /* Juego en curso */
     } Else {
 
-        /* levantar carta en mazo de descarte */
-        If (pj:mazo #= MAZO_DESCARTE) Then {
+        /* si tengo que levantar carta en mazo de descarte */
+        If (Not(Null?(pj:mazo)) And pj:mazo #= MAZO_DESCARTE) Then {
           SelectList( Button:InstanceList, b, {
             If (b:carta:ubicacion #= MAZO_DESCARTE) Then {
               SetValue ( b:BackgroundColor, 112, 219, 147 );
@@ -37,33 +37,34 @@ MakeFunction( seleccionar_cartas, [boton], {
 
         /* modifico atributos de las 2 cartas descartadas */
         EnumList( Button:InstanceList, b, {
-          /* carta que estaba en el mazo de descarte */
+          /* carta que estaba en el mazo de descarte si no la levante */
           If (b:carta:ubicacion #= MAZO_DESCARTE) Then {
             /* restablezco color boton */
             SetValue ( b:BackgroundColor, 212, 208, 200 );
             ResetImage (b);
             /* restablezco atributos de la carta */
             SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
-          }
+          } Else { 
 
           /* carta tirada al mazo de descarte por recomendacion anterior */
-          Else If (Not (Null? (pj:carta) ) ) Then 
-            If (b:carta:valor == pj:carta:valor And
+            If (Not (Null? (pj:carta)) And 
+                b:carta:valor == pj:carta:valor And
                 b:carta:palo #= pj:carta:palo) Then {
-              /* restablezco color boton */
-              SetValue ( b:BackgroundColor, 212, 208, 200 );
-              ResetImage (b);
-              /* restablezco atributos de la carta */
-              SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
-              ClearList (b:carta:grupo);
-              SetValue (b:carta:prioridad, 0);
-              /* la borro de la lista de cartas del jugador */
-              RemoveFromList (j:posee, b:carta);
-            }
+               /* restablezco color boton */
+               SetValue ( b:BackgroundColor, 212, 208, 200 );
+               ResetImage (b);
+               /* restablezco atributos de la carta */
+               SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
+               ClearList (b:carta:grupo);
+               SetValue (b:carta:prioridad, 0);
+               /* la borro de la lista de cartas del jugador */
+               RemoveFromList (j:posee, b:carta);
+              }
+          };
         });
 
         /* seleccion carta levantada del mazo de levante */
-        If (pj:mazo #= MAZO_LEVANTE) Then {
+        If (Not(Null?(pj:mazo)) And pj:mazo #= MAZO_LEVANTE) Then {
           /* actualizo atributos de la carta */
           boton:carta:ubicacion = JUGADOR1;
           /* agrego carta a lista de cartas del jugador */
@@ -71,7 +72,8 @@ MakeFunction( seleccionar_cartas, [boton], {
           /* cambio el boton de color */
           SetValue( boton:BackgroundColor, 112, 219, 147 );
           /* indico que necesito conocer carta en mazo de descarte */
-          SetValue(pj:mazo, Null);
+          SetValue(pj:mazo, NULL);
+          SetValue(pj:carta, NULL);
           /* actualizo mensaje de ayuda */
           SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
           ResetImage(txtAyuda);
@@ -98,10 +100,12 @@ MakeFunction( seleccionar_cartas, [boton], {
           If (Not (Null? (pj:carta) ) ) Then
             SetValue(txtTirar:Title,"Tirar: " # pj:carta:valor # " de " # 
                                                 pj:carta:palo);
-          If(pj:mazo #= MAZO_LEVANTE) Then
-            SetValue(txtAyuda:Title, 
-                     "Seleccione carta levantada del mazo de levante");
-
+          /* actualizo mensaje de ayuda */
+          If (pj:mazo #= MAZO_LEVANTE) Then {
+            SetValue(txtAyuda:Title, "Seleccione carta levantada del mazo de levante");
+          } Else {
+            SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
+          };
           ResetImage(boton);
           ResetImage(txtLevantar);
           ResetImage(txtTirar);
