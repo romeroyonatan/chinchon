@@ -9,14 +9,6 @@
         ****  FUNCTION: seleccionar_cartas
         *************************************/
 MakeFunction( seleccionar_cartas, [boton], {
-    /* saco boton rojo anterior */
-    EnumList( Button:InstanceList, b, {
-      If (b:carta:ubicacion #= MAZO_DESCARTE) Then {
-        SetValue ( b:BackgroundColor, 212, 208, 200 );
-        SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
-        ResetImage (b);
-      }
-    });
     /* Jugador selecciona sus cartas */
     If (LengthList(j:posee) < 7) Then {
         boton:carta:ubicacion = JUGADOR_1;
@@ -25,31 +17,97 @@ MakeFunction( seleccionar_cartas, [boton], {
         If (LengthList(j:posee) == 7) Then {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
             ResetImage(txtAyuda);
+            SetValue (pj:mazo, Null); /* fuerzo a que no exista prox jugada */
         }
 
-    /* seleccion de carta en mazo de descarte */
+    /* Juego en curso */
     } Else {
-        boton:carta:ubicacion = MAZO_DESCARTE;
-        SetValue( boton:BackgroundColor, 255, 127, 80 );
-        /* efectuo cambios de jugada anterior */
-        If (Not (Null? (pj:carta) ) ) Then {
-            /* reseteo valores de la instancia carta */
-            SetValue (pj:carta:ubicacion, MAZO_LEVANTE);
-            ClearList (pj:carta:grupo);
-            SetValue (pj:carta:prioridad, 0);
-            
+
+        /* levantar carta en mazo de descarte */
+        If (pj:mazo #= MAZO_DESCARTE) Then {
+          SelectList( Button:InstanceList, b, {
+            If (b:carta:ubicacion #= MAZO_DESCARTE) Then {
+              SetValue ( b:BackgroundColor, 112, 219, 147 );
+              SetValue ( b:carta:ubicacion, JUGADOR1);
+              ResetImage (b);
+              AppendToList(j:posee, b:carta);
+            }
+          });
         };
-        /* inicio inferencia de proxima jugada */
-        ForwardChain([NOASSERT], NULL, R01, R02, R03, R04);
-        /* muestro resultados de la inferencia al usuario */
-        SetValue(txtLevantar:Title, "Levantar: " # pj:mazo);
-        SetValue(txtCortar:Title, "Cortar: " # pj:cortar);
-        If (Not (Null? (pj:carta) ) ) Then
-          SetValue(txtTirar:Title,"Tirar: " # pj:carta:valor # " de " # 
-                                              pj:carta:palo);
-        ResetImage(txtLevantar);
-        ResetImage(txtTirar);
-        ResetImage(txtCortar);
+
+        /* modifico atributos de las 2 cartas descartadas */
+        EnumList( Button:InstanceList, b, {
+          /* carta que estaba en el mazo de descarte */
+          If (b:carta:ubicacion #= MAZO_DESCARTE) Then {
+            /* restablezco color boton */
+            SetValue ( b:BackgroundColor, 212, 208, 200 );
+            ResetImage (b);
+            /* restablezco atributos de la carta */
+            SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
+          }
+
+          /* carta tirada al mazo de descarte por recomendacion anterior */
+          Else If (Not (Null? (pj:carta) ) ) Then 
+            If (b:carta:valor == pj:carta:valor And
+                b:carta:palo #= pj:carta:palo) Then {
+              /* restablezco color boton */
+              SetValue ( b:BackgroundColor, 212, 208, 200 );
+              ResetImage (b);
+              /* restablezco atributos de la carta */
+              SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
+              ClearList (b:carta:grupo);
+              SetValue (b:carta:prioridad, 0);
+              /* la borro de la lista de cartas del jugador */
+              RemoveFromList (j:posee, b:carta);
+            }
+        });
+
+        /* seleccion carta levantada del mazo de levante */
+        If (pj:mazo #= MAZO_LEVANTE) Then {
+          /* actualizo atributos de la carta */
+          boton:carta:ubicacion = JUGADOR1;
+          /* agrego carta a lista de cartas del jugador */
+          AppendToList(j:posee, boton:carta);
+          /* cambio el boton de color */
+          SetValue( boton:BackgroundColor, 112, 219, 147 );
+          /* indico que necesito conocer carta en mazo de descarte */
+          SetValue(pj:mazo, Null);
+          /* actualizo mensaje de ayuda */
+          SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
+          ResetImage(txtAyuda);
+
+        /* seleccionar carta del mazo de descarte */
+        } Else {
+
+          /* seleccion de carta en mazo descarte */
+          boton:carta:ubicacion = MAZO_DESCARTE;
+          SetValue( boton:BackgroundColor, 255, 127, 80 );
+
+          /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
+          /* XXX esto no va. solo para debug */
+          SetValue(pj:carta, GetNthElem (j:posee, 1));
+          SetValue(pj:mazo, MAZO_LEVANTE);
+          /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+
+          /* inicio inferencia de proxima jugada */
+          ForwardChain([NOASSERT], NULL, R01, R02, R03, R04);
+
+          /* muestro resultados de la inferencia al usuario */
+          SetValue(txtLevantar:Title, "Levantar: " # pj:mazo);
+          SetValue(txtCortar:Title, "Cortar: " # pj:cortar);
+          If (Not (Null? (pj:carta) ) ) Then
+            SetValue(txtTirar:Title,"Tirar: " # pj:carta:valor # " de " # 
+                                                pj:carta:palo);
+          If(pj:mazo #= MAZO_LEVANTE) Then
+            SetValue(txtAyuda:Title, 
+                     "Seleccione carta levantada del mazo de levante");
+
+          ResetImage(boton);
+          ResetImage(txtLevantar);
+          ResetImage(txtTirar);
+          ResetImage(txtCortar);
+          ResetImage(txtAyuda);
+        }
     }
 });
 
@@ -1585,7 +1643,7 @@ btn12espada:Action = seleccionar_cartas;
         *************************************/
 MakeInstance( txtLevantar, Text );
 txtLevantar:SessionNumber = 0;
-txtLevantar:Title = Levantar;
+txtLevantar:Title = "Levantar: ";
 txtLevantar:Visible = TRUE;
 txtLevantar:X = 20;
 txtLevantar:Y = 388;
@@ -1603,7 +1661,7 @@ txtLevantar:Justification = LEFT;
         *************************************/
 MakeInstance( txtCortar, Text );
 txtCortar:SessionNumber = 0;
-txtCortar:Title = Cortar;
+txtCortar:Title = "Cortar: ";
 txtCortar:Visible = TRUE;
 txtCortar:X = 200;
 txtCortar:Y = 388;
@@ -1621,7 +1679,7 @@ txtCortar:Justification = LEFT;
         *************************************/
 MakeInstance( txtTirar, Text );
 txtTirar:SessionNumber = 0;
-txtTirar:Title = Tirar;
+txtTirar:Title = "Tirar: ";
 txtTirar:Visible = TRUE;
 txtTirar:X = 300;
 txtTirar:Y = 388;
