@@ -1308,6 +1308,11 @@ SetValue( btn1espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn1espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn1espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn1espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn1espada:carta );
+SetSlotOption( btn1espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn1espada:carta, ALLOWABLE_CLASSES, Carta );
+btn1espada:carta = e1;
+btn1espada:Action = seleccionar_cartas;
  ResetImage (  btn1espada  ); 
 
        /*************************************
@@ -1323,6 +1328,11 @@ SetValue( btn2espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn2espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn2espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn2espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn2espada:carta );
+SetSlotOption( btn2espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn2espada:carta, ALLOWABLE_CLASSES, Carta );
+btn2espada:carta = e2;
+btn2espada:Action = seleccionar_cartas;
  ResetImage (  btn2espada  ); 
 
        /*************************************
@@ -1338,6 +1348,11 @@ SetValue( btn3espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn3espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn3espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn3espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn3espada:carta );
+SetSlotOption( btn3espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn3espada:carta, ALLOWABLE_CLASSES, Carta );
+btn3espada:carta = e3;
+btn3espada:Action = seleccionar_cartas;
  ResetImage (  btn3espada  ); 
 
        /*************************************
@@ -1353,6 +1368,11 @@ SetValue( btn4espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn4espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn4espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn4espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn4espada:carta );
+SetSlotOption( btn4espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn4espada:carta, ALLOWABLE_CLASSES, Carta );
+btn4espada:carta = e4;
+btn4espada:Action = seleccionar_cartas;
  ResetImage (  btn4espada  ); 
 
        /*************************************
@@ -1368,6 +1388,11 @@ SetValue( btn5espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn5espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn5espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn5espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn5espada:carta );
+SetSlotOption( btn5espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn5espada:carta, ALLOWABLE_CLASSES, Carta );
+btn5espada:carta = e5;
+btn5espada:Action = seleccionar_cartas;
  ResetImage (  btn5espada  ); 
 
        /*************************************
@@ -1383,6 +1408,11 @@ SetValue( btn6espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn6espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn6espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn6espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn6espada:carta );
+SetSlotOption( btn6espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn6espada:carta, ALLOWABLE_CLASSES, Carta );
+btn6espada:carta = e6;
+btn6espada:Action = seleccionar_cartas;
  ResetImage (  btn6espada  ); 
 
        /*************************************
@@ -1398,6 +1428,11 @@ SetValue( btn7espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn7espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn7espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn7espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn7espada:carta );
+SetSlotOption( btn7espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn7espada:carta, ALLOWABLE_CLASSES, Carta );
+btn7espada:carta = e1;
+btn7espada:Action = seleccionar_cartas;
  ResetImage (  btn7espada  ); 
 
        /*************************************
@@ -1413,6 +1448,11 @@ SetValue( btn8espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn8espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn8espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn8espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn8espada:carta );
+SetSlotOption( btn8espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn8espada:carta, ALLOWABLE_CLASSES, Carta );
+btn8espada:carta = e8;
+btn8espada:Action = seleccionar_cartas;
  ResetImage (  btn8espada  ); 
 
        /*************************************
@@ -1428,6 +1468,11 @@ SetValue( btn9espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn9espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn9espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn9espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn9espada:carta );
+SetSlotOption( btn9espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn9espada:carta, ALLOWABLE_CLASSES, Carta );
+btn9espada:carta = e9;
+btn9espada:Action = seleccionar_cartas;
  ResetImage (  btn9espada  ); 
 
        /*************************************
@@ -1443,6 +1488,11 @@ SetValue( btn10espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn10espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn10espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn10espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn10espada:carta );
+SetSlotOption( btn10espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn10espada:carta, ALLOWABLE_CLASSES, Carta );
+btn10espada:carta = e10;
+btn10espada:Action = seleccionar_cartas;
  ResetImage (  btn10espada  ); 
 
        /*************************************
@@ -1458,6 +1508,11 @@ SetValue( btn11espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn11espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn11espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn11espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn11espada:carta );
+SetSlotOption( btn11espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn11espada:carta, ALLOWABLE_CLASSES, Carta );
+btn11espada:carta = e11;
+btn11espada:Action = seleccionar_cartas;
  ResetImage (  btn11espada  ); 
 
        /*************************************
@@ -1473,6 +1528,11 @@ SetValue( btn12espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn12espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn12espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12espada:BackgroundColor2, 255, 255, 255 );
+MakeSlot( btn12espada:carta );
+SetSlotOption( btn12espada:carta, VALUE_TYPE, OBJECT );
+SetSlotOption( btn12espada:carta, ALLOWABLE_CLASSES, Carta );
+btn12espada:carta = e12;
+btn12espada:Action = seleccionar_cartas;
  ResetImage (  btn12espada  ); 
 
        /*************************************
