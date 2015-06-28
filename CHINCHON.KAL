@@ -168,7 +168,6 @@ MakeFunction (init_oro, [], {
     MakeInstance( o1, Carta );
     o1:palo = oro;
     o1:valor = 1;
-    o1:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: o2
@@ -176,7 +175,6 @@ MakeFunction (init_oro, [], {
     MakeInstance( o2, Carta );
     o2:palo = oro;
     o2:valor = 2;
-    o2:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: o3
@@ -184,7 +182,6 @@ MakeFunction (init_oro, [], {
     MakeInstance( o3, Carta );
     o3:palo = oro;
     o3:valor = 3;
-    o3:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: o4
@@ -192,7 +189,6 @@ MakeFunction (init_oro, [], {
     MakeInstance( o4, Carta );
     o4:palo = oro;
     o4:valor = 4;
-    o4:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: o5
@@ -200,7 +196,6 @@ MakeFunction (init_oro, [], {
     MakeInstance( o5, Carta );
     o5:palo = oro;
     o5:valor = 5;
-    o5:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: o6
@@ -208,7 +203,6 @@ MakeFunction (init_oro, [], {
     MakeInstance( o6, Carta );
     o6:palo = oro;
     o6:valor = 6;
-    o6:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: o7
@@ -216,7 +210,6 @@ MakeFunction (init_oro, [], {
     MakeInstance( o7, Carta );
     o7:palo = oro;
     o7:valor = 7;
-    o7:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: o8
@@ -224,35 +217,30 @@ MakeFunction (init_oro, [], {
     MakeInstance( o8, Carta );
     o8:palo = oro;
     o8:valor = 8;
-    o8:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: o9
             *************************************/
     MakeInstance( o9, Carta );
     o9:palo = oro;
     o9:valor = 9;
-    o9:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: o10
             *************************************/
     MakeInstance( o10, Carta );
     o10:palo = oro;
     o10:valor = 10;
-    o10:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: o11
             *************************************/
     MakeInstance( o11, Carta );
     o11:palo = oro;
     o11:valor = 11;
-    o11:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: o12
             *************************************/
     MakeInstance( o12, Carta );
     o12:palo = oro;
     o12:valor = 12;
-    o12:ubicacion = MAZO_LEVANTE;
 }); 
 
 MakeFunction (init_basto, [], {
@@ -262,7 +250,6 @@ MakeFunction (init_basto, [], {
     MakeInstance( b1, Carta );
     b1:palo = basto;
     b1:valor = 1;
-    b1:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: b2
@@ -270,7 +257,6 @@ MakeFunction (init_basto, [], {
     MakeInstance( b2, Carta );
     b2:palo = basto;
     b2:valor = 2;
-    b2:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: b3
@@ -278,7 +264,6 @@ MakeFunction (init_basto, [], {
     MakeInstance( b3, Carta );
     b3:palo = basto;
     b3:valor = 3;
-    b3:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: b4
@@ -286,7 +271,6 @@ MakeFunction (init_basto, [], {
     MakeInstance( b4, Carta );
     b4:palo = basto;
     b4:valor = 4;
-    b4:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: b5
@@ -294,7 +278,6 @@ MakeFunction (init_basto, [], {
     MakeInstance( b5, Carta );
     b5:palo = basto;
     b5:valor = 5;
-    b5:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: b6
@@ -302,7 +285,6 @@ MakeFunction (init_basto, [], {
     MakeInstance( b6, Carta );
     b6:palo = basto;
     b6:valor = 6;
-    b6:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: b7
@@ -310,7 +292,6 @@ MakeFunction (init_basto, [], {
     MakeInstance( b7, Carta );
     b7:palo = basto;
     b7:valor = 7;
-    b7:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: b8
@@ -318,35 +299,30 @@ MakeFunction (init_basto, [], {
     MakeInstance( b8, Carta );
     b8:palo = basto;
     b8:valor = 8;
-    b8:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: b9
             *************************************/
     MakeInstance( b9, Carta );
     b9:palo = basto;
     b9:valor = 9;
-    b9:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: b10
             *************************************/
     MakeInstance( b10, Carta );
     b10:palo = basto;
     b10:valor = 10;
-    b10:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: b11
             *************************************/
     MakeInstance( b11, Carta );
     b11:palo = basto;
     b11:valor = 11;
-    b11:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: b12
             *************************************/
     MakeInstance( b12, Carta );
     b12:palo = basto;
     b12:valor = 12;
-    b12:ubicacion = MAZO_LEVANTE;
 }); 
 
 MakeFunction (init_espada, [], {
@@ -356,7 +332,6 @@ MakeFunction (init_espada, [], {
     MakeInstance( e1, Carta );
     e1:palo = espada;
     e1:valor = 1;
-    e1:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: e2
@@ -364,7 +339,6 @@ MakeFunction (init_espada, [], {
     MakeInstance( e2, Carta );
     e2:palo = espada;
     e2:valor = 2;
-    e2:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: e3
@@ -372,7 +346,6 @@ MakeFunction (init_espada, [], {
     MakeInstance( e3, Carta );
     e3:palo = espada;
     e3:valor = 3;
-    e3:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: e4
@@ -380,7 +353,6 @@ MakeFunction (init_espada, [], {
     MakeInstance( e4, Carta );
     e4:palo = espada;
     e4:valor = 4;
-    e4:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: e5
@@ -388,7 +360,6 @@ MakeFunction (init_espada, [], {
     MakeInstance( e5, Carta );
     e5:palo = espada;
     e5:valor = 5;
-    e5:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: e6
@@ -396,7 +367,6 @@ MakeFunction (init_espada, [], {
     MakeInstance( e6, Carta );
     e6:palo = espada;
     e6:valor = 6;
-    e6:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: e7
@@ -404,7 +374,6 @@ MakeFunction (init_espada, [], {
     MakeInstance( e7, Carta );
     e7:palo = espada;
     e7:valor = 7;
-    e7:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: e8
@@ -412,35 +381,30 @@ MakeFunction (init_espada, [], {
     MakeInstance( e8, Carta );
     e8:palo = espada;
     e8:valor = 8;
-    e8:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: e9
             *************************************/
     MakeInstance( e9, Carta );
     e9:palo = espada;
     e9:valor = 9;
-    e9:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: e10
             *************************************/
     MakeInstance( e10, Carta );
     e10:palo = espada;
     e10:valor = 10;
-    e10:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: e11
             *************************************/
     MakeInstance( e11, Carta );
     e11:palo = espada;
     e11:valor = 11;
-    e11:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: e12
             *************************************/
     MakeInstance( e12, Carta );
     e12:palo = espada;
     e12:valor = 12;
-    e12:ubicacion = MAZO_LEVANTE;
 }); 
 
 MakeFunction (init_copa, [], {
@@ -450,7 +414,6 @@ MakeFunction (init_copa, [], {
     MakeInstance( c1, Carta );
     c1:palo = copa;
     c1:valor = 1;
-    c1:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: c2
@@ -458,7 +421,6 @@ MakeFunction (init_copa, [], {
     MakeInstance( c2, Carta );
     c2:palo = copa;
     c2:valor = 2;
-    c2:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: c3
@@ -466,7 +428,6 @@ MakeFunction (init_copa, [], {
     MakeInstance( c3, Carta );
     c3:palo = copa;
     c3:valor = 3;
-    c3:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: c4
@@ -474,7 +435,6 @@ MakeFunction (init_copa, [], {
     MakeInstance( c4, Carta );
     c4:palo = copa;
     c4:valor = 4;
-    c4:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: c5
@@ -482,7 +442,6 @@ MakeFunction (init_copa, [], {
     MakeInstance( c5, Carta );
     c5:palo = copa;
     c5:valor = 5;
-    c5:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: c6
@@ -490,7 +449,6 @@ MakeFunction (init_copa, [], {
     MakeInstance( c6, Carta );
     c6:palo = copa;
     c6:valor = 6;
-    c6:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: c7
@@ -498,7 +456,6 @@ MakeFunction (init_copa, [], {
     MakeInstance( c7, Carta );
     c7:palo = copa;
     c7:valor = 7;
-    c7:ubicacion = MAZO_LEVANTE;
     
            /*************************************
             ****  INSTANCE: c8
@@ -506,35 +463,30 @@ MakeFunction (init_copa, [], {
     MakeInstance( c8, Carta );
     c8:palo = copa;
     c8:valor = 8;
-    c8:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: c9
             *************************************/
     MakeInstance( c9, Carta );
     c9:palo = copa;
     c9:valor = 9;
-    c9:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: c10
             *************************************/
     MakeInstance( c10, Carta );
     c10:palo = copa;
     c10:valor = 10;
-    c10:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: c11
             *************************************/
     MakeInstance( c11, Carta );
     c11:palo = copa;
     c11:valor = 11;
-    c11:ubicacion = MAZO_LEVANTE;
            /*************************************
             ****  INSTANCE: c12
             *************************************/
     MakeInstance( c12, Carta );
     c12:palo = copa;
     c12:valor = 12;
-    c12:ubicacion = MAZO_LEVANTE;
 });
 /*********************************************************/
 /**         ALL CLASSES ARE SAVED BELOW             **/
