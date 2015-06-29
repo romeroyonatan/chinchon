@@ -20,14 +20,14 @@ MakeFunction( seleccionar_cartas, [boton], {
         If (LengthList(j:posee) == 7) Then {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
             ResetImage(txtAyuda);
-            SetValue (pj:mazo, NULL); /* fuerzo a que no exista prox jugada */
+            SetValue (pj:carta, NULL); /* fuerzo a que no exista prox jugada */
         }
 
     /* Juego en curso */
     } Else {
 
         /* si tengo que levantar carta en mazo de descarte */
-        If (Not(Null?(pj:mazo)) And pj:mazo #= MAZO_DESCARTE) Then {
+        If (pj:mazo #= MAZO_DESCARTE) Then {
           SelectList( Button:InstanceList, b, {
             If (Slot?(b:carta) And b:carta:ubicacion #= MAZO_DESCARTE) Then {
               SetValue ( b:BackgroundColor, 112, 219, 147 );
@@ -70,7 +70,7 @@ MakeFunction( seleccionar_cartas, [boton], {
         });
 
         /* seleccion carta levantada del mazo de levante */
-        If (Not(Null?(pj:mazo)) And pj:mazo #= MAZO_LEVANTE) Then {
+        If (Not(Null?(pj:carta)) And pj:mazo #= MAZO_LEVANTE) Then {
           /* actualizo atributos de la carta */
           boton:carta:ubicacion = JUGADOR1;
           /* agrego carta a lista de cartas del jugador */
@@ -78,7 +78,6 @@ MakeFunction( seleccionar_cartas, [boton], {
           /* cambio el boton de color */
           SetValue( boton:BackgroundColor, 112, 219, 147 );
           /* indico que necesito conocer carta en mazo de descarte */
-          SetValue(pj:mazo, NULL);
           SetValue(pj:carta, NULL);
           /* actualizo mensaje de ayuda */
           SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
@@ -93,10 +92,12 @@ MakeFunction( seleccionar_cartas, [boton], {
 
           /* inicio inferencia de proxima jugada */
           /*ForwardChain([NOASSERT], NULL, R01, R02, R03, R04, R10, R11);*/
-          BackwardChain(proxima_jugada);
+          ForwardChain([NOASSERT], chinchon, Reglas:agrupar);
+          BackwardChain(proxima_jugada, Reglas:tirar, Reglas:mazo);
+          BackwardChain(terminar_mano, Reglas:cortar);
 
           /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
-          /* XXX esto no va. solo para debug */
+          /* XXX esto no va. solo para debug 
           SetValue(pj:carta, GetNthElem (j:posee, 1));
           SetValue(pj:mazo, MAZO_LEVANTE);
           /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
@@ -658,6 +659,26 @@ MakeSlot( PJ:recomendado_a );
 SetSlotOption( PJ:recomendado_a, VALUE_TYPE, OBJECT );
 SetSlotOption( PJ:recomendado_a, ALLOWABLE_CLASSES, Jugador );
 
+       /*************************************
+        ****  CLASS: Reglas
+        *************************************/
+MakeClass( Reglas, Root );
+MakeSlot( Reglas:agrupar );
+SetSlotOption( Reglas:agrupar, VALUE_TYPE, TEXT );
+SetSlotOption( Reglas:agrupar, MULTIPLE );
+SetValue ( Reglas:agrupar, R10, R11, R12, R13);
+MakeSlot( Reglas:cortar );
+SetSlotOption( Reglas:cortar, VALUE_TYPE, TEXT );
+SetSlotOption( Reglas:cortar, MULTIPLE );
+SetValue ( Reglas:cortar, R01, R02, R03, R04);
+MakeSlot( Reglas:mazo );
+SetSlotOption( Reglas:mazo, VALUE_TYPE, TEXT );
+SetSlotOption( Reglas:mazo, MULTIPLE );
+SetValue ( Reglas:mazo, R20, R21, R22);
+MakeSlot( Reglas:tirar );
+SetSlotOption( Reglas:tirar, VALUE_TYPE, TEXT );
+SetSlotOption( Reglas:tirar, MULTIPLE );
+SetValue ( Reglas:tirar, R30);
 
 MakeSlot( Button, InstanceList );
 SetSlotOption( Button, InstanceList, MULTIPLE );
@@ -1968,3 +1989,5 @@ init();
 /**         ALL GOALS ARE SAVED BELOW             **/
 /*********************************************************/
 MakeGoal (proxima_jugada, Not(Null?(pj:carta)) And Not(Null?(pj:mazo)));
+MakeGoal (chinchon, j:cartas_emparejadas == 7);
+MakeGoal (terminar_mano, pj:cortar);
