@@ -1797,8 +1797,7 @@ MakeRule( R10, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
         *************************************/
 MakeRule( R11, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
     c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
-    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor +
-                                                       2 )
+    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 )
         And c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo
         #= c2:palo,
     {
@@ -1866,22 +1865,16 @@ MakeRule( R13, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
 
        /*************************************
         ****  RULE: R14
-        *************************************/
+        *************************************
 MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta jugador|Jugador],
-        c1:palo #= c7:palo And c1:ubicacion #= JUGADOR1 And
-        c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1
+        c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1
         And c4:ubicacion #= JUGADOR1 And c5:ubicacion #= JUGADOR1
         And c6:ubicacion #= JUGADOR1 And c7:ubicacion #= JUGADOR1 And
-    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor +
-                                                       2 )
-        And c1:valor == ( c4:valor + 3 ) And c1:valor == ( c4:valor
-                                                               +
-                                                               4 )
-        And c1:valor == ( c4:valor + 5 ) And c1:valor == ( c4:valor
-                                                               +
-                                                               6 )
+    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 )
+        And c1:valor == ( c4:valor + 3 ) And c1:valor == ( c4:valor + 4 )
+        And c1:valor == ( c4:valor + 5 ) And c1:valor == ( c4:valor + 6 )
         And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo
-        #= c4:palo And c1:palo #= c5:palo And c1:palo #= c6:palo,
+        #= c4:palo And c1:palo #= c5:palo And c1:palo #= c6:palo And c1:palo #= c7:palo,
     {
     jugador:cartas_emparejadas += 3;
     AppendToList( c1:grupo, c2 );
@@ -1926,7 +1919,7 @@ MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta j
     AppendToList( c7:grupo, c4 );
     AppendToList( c7:grupo, c5 );
     AppendToList( c7:grupo, c6 );
-    } );
+    } ); */
 
        /*************************************
         ****  RULE: R20
