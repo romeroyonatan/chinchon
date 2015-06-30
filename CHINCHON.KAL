@@ -9,18 +9,24 @@
         ****  FUNCTION: seleccionar_cartas
         *************************************/
 MakeFunction( seleccionar_cartas, [boton], {
-    If (Member?(j:posee, boton:carta)) Then {
+    /* Creo instancia de la carta */
+    MakeInstance( boton:palo#boton:valor, Carta);
+    SetValue (Auxiliar:carta_seleccionada, boton:palo#boton:valor);
+    SetValue (Auxiliar:carta_seleccionada:valor, boton:valor);
+    SetValue (Auxiliar:carta_seleccionada:palo, boton:palo);
+
+    If (Member?(j:posee, Auxiliar:carta_seleccionada)) Then {
         PostMessage("Ya posee esta carta en su mano");
     } Else {
     /* Jugador selecciona sus cartas */
     If (LengthList(j:posee) < 7) Then {
-        boton:carta:ubicacion = JUGADOR1;
-        AppendToList(j:posee, boton:carta);
+        Auxiliar:carta_seleccionada:ubicacion = JUGADOR1;
+        AppendToList(j:posee, Auxiliar:carta_seleccionada);
         SetValue( boton:BackgroundColor, 112, 219, 147 );
         If (LengthList(j:posee) == 7) Then {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
             ResetImage(txtAyuda);
-            SetValue (pj:carta, NULL); /* fuerzo a que no exista prox jugada */
+            SetValue (pj:cortar, NULL); /* fuerzo a que no exista prox jugada */
         }
 
     /* Juego en curso */
@@ -28,57 +34,62 @@ MakeFunction( seleccionar_cartas, [boton], {
 
         /* si tengo que levantar carta en mazo de descarte */
         If (pj:mazo #= MAZO_DESCARTE) Then {
-          SelectList( Button:InstanceList, b, {
-            If (Slot?(b:carta) And b:carta:ubicacion #= MAZO_DESCARTE) Then {
-              SetValue ( b:BackgroundColor, 112, 219, 147 );
-              SetValue ( b:carta:ubicacion, JUGADOR1);
-              ResetImage (b);
-              AppendToList(j:posee, b:carta);
+          EnumList (Button:InstanceList, b, {
+            /* si existe una instancia para esa carta */
+            If (Slot?(b:valor) And Instance? (b:palo#b:valor)) Then {
+              SetValue(Auxiliar:carta_mesa, b:palo#b:valor);
+              /* si esa instancia esta en el mazo de descarte */
+              If (Auxiliar:carta_mesa:ubicacion #= MAZO_DESCARTE) Then {
+                SetValue ( b:BackgroundColor, 112, 219, 147 );
+                SetValue ( Auxiliar:carta_mesa, JUGADOR1);
+                ResetImage (b);
+                AppendToList(j:posee, Auxiliar:carta_mesa);
+              }
             }
           });
         };
 
-        /* modifico atributos de las 2 cartas descartadas */
+        /* limpio las 2 cartas descartadas */
         EnumList( Button:InstanceList, b, {
-          If (Slot?(b:carta)) Then
-          /* carta que estaba en el mazo de descarte si no la levante */
-          If (b:carta:ubicacion #= MAZO_DESCARTE) Then {
-            /* restablezco color boton */
-            ResetValue ( b:BackgroundColor);
-            ResetImage (b);
-            /* restablezco atributos de la carta */
-            SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
-          } Else { 
+          /* si existe instancia creada para este boton */
+          If (Slot?(b:valor) And Instance? (b:palo#b:valor)) Then {
+            SetValue(Auxiliar:carta_mesa, b:palo#b:valor);
 
-          /* carta tirada al mazo de descarte por recomendacion anterior */
+            /* carta que esta en el mazo de descarte */
+            If (Auxiliar:carta_mesa:ubicacion #= MAZO_DESCARTE) Then {
+              /* restablezco color boton */
+              ResetValue (b:BackgroundColor);
+              ResetImage (b);
+              /* borro instancia de la carta */
+              DeleteInstance(Auxiliar:carta_mesa);  
+            };
+            /* carta tirada al mazo de descarte por recomendacion anterior */
             If (Not (Null? (pj:carta)) And 
-                b:carta:valor == pj:carta:valor And
-                b:carta:palo #= pj:carta:palo) Then {
+                b:valor == pj:carta:valor And
+                b:palo #= pj:carta:palo) Then {
                /* restablezco color boton */
-               ResetValue ( b:BackgroundColor);
+               ResetValue (b:BackgroundColor);
                ResetImage (b);
-               /* restablezco atributos de la carta */
-               SetValue ( b:carta:ubicacion, MAZO_LEVANTE);
-               ClearList (b:carta:grupo);
-               ResetValue (b:carta:prioridad);
                /* la borro de la lista de cartas del jugador */
-               If(Member?(j:posee, b:carta)) Then {
-                    RemoveFromList (j:posee, b:carta);
-               }
-              }
+               If(Member?(pj:recomendado_a:posee, pj:carta)) Then 
+                    RemoveFromList (pj:recomendado_a:posee, pj:carta);
+               /* borro instancia de la carta */
+               DeleteInstance(pj:carta); 
+               pj:carta = NULL;
+            };
           };
         });
 
         /* seleccion carta levantada del mazo de levante */
-        If (Not(Null?(pj:carta)) And pj:mazo #= MAZO_LEVANTE) Then {
+        If (Not(Null?(pj:cortar)) And pj:mazo #= MAZO_LEVANTE) Then {
           /* actualizo atributos de la carta */
-          boton:carta:ubicacion = JUGADOR1;
+          Auxiliar:carta_seleccionada:ubicacion = JUGADOR1;
           /* agrego carta a lista de cartas del jugador */
-          AppendToList(j:posee, boton:carta);
+          AppendToList(j:posee, Auxiliar:carta_seleccionada);
           /* cambio el boton de color */
           SetValue( boton:BackgroundColor, 112, 219, 147 );
           /* indico que necesito conocer carta en mazo de descarte */
-          SetValue(pj:carta, NULL);
+          SetValue(pj:cortar, NULL);
           /* actualizo mensaje de ayuda */
           SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
           ResetImage(txtAyuda);
@@ -87,35 +98,30 @@ MakeFunction( seleccionar_cartas, [boton], {
         } Else {
 
           /* seleccion de carta en mazo descarte */
-          boton:carta:ubicacion = MAZO_DESCARTE;
+          Auxiliar:carta_seleccionada:ubicacion = MAZO_DESCARTE;
           SetValue( boton:BackgroundColor, 255, 127, 80 );
 
           /* inicio inferencia de proxima jugada */
-          /*ForwardChain([NOASSERT], NULL, R01, R02, R03, R04, R10, R11);*/
-          ForwardChain([NOASSERT], chinchon, Reglas:agrupar);
-          ForwardChain([NOASSERT], terminar_mano, Reglas:cortar);
-          ForwardChain([NOASSERT], proxima_jugada, Reglas:tirar, Reglas:mazo);
-          /*BackwardChain(proxima_jugada, Reglas:tirar, Reglas:mazo);*/
-
-          /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
-          /* XXX esto no va. solo para debug 
-          SetValue(pj:carta, GetNthElem (j:posee, 1));
-          SetValue(pj:mazo, MAZO_LEVANTE);
-          /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+          /*BackwardChain( [NOASSERT], chinchon, Reglas:agrupar);*/
+          ForwardChain( [NOASSERT], chinchon, Reglas:agrupar);
+          ForwardChain( [NOASSERT], terminar_mano, Reglas:cortar);
+          BackwardChain( [NOASK], proxima_jugada, Reglas:tirar, Reglas:mazo);
 
           /* muestro resultados de la inferencia al usuario */
           SetValue(txtLevantar:Title, "Levantar: " # pj:mazo);
-          If (Not (Null? (pj:carta) ) ) Then
-            SetValue(txtTirar:Title,"Tirar: " # pj:carta:valor # " de " # 
-                                                pj:carta:palo);
+          If (Not (Null? (pj:carta) ) ) Then {
+            SetValue( txtTirar:Title, "Tirar: " # pj:carta:valor # " de " # 
+                                                 pj:carta:palo);
+          } Else {
+            SetValue( txtTirar:Title, "Tirar: " ) 
+          };
 
-          /* actualizo mensaje de ayuda */
+          /* actualizo mensajes de ayuda */
           If (pj:mazo #= MAZO_LEVANTE) Then {
             SetValue(txtAyuda:Title, "Seleccione carta levantada del mazo de levante");
           } Else {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
           };
-
           If (pj:cortar) Then {
             PostMessage ("Puede cortar. Felicidades, Ha ganado la mano");
             reset();
@@ -134,19 +140,17 @@ MakeFunction(reset, [], {
   /* Reestablezco todas las instancias de cartas y de jugador */
   ResetValue(j:cartas_emparejadas);
   ClearList(j:posee);
-  GetInstanceList(Carta, Auxiliar:Instancias);
   ResetValue(pj:cortar);
   ResetValue(pj:mazo);
   ResetValue(pj:carta);
-  EnumList (Auxiliar:Instancias, x, {
-      ResetValue(x:ubicacion);
-      ClearList(x:grupo);
-  });
+
+  ForAll[c|Carta]
+    DeleteInstance(c);
 
   /* Restablezco color de los botones */
   GetInstanceList(Button, Button:InstanceList);
   EnumList (Button:InstanceList, b, {
-    If (Slot?(b:carta)) Then 
+    If (Slot?(b:valor)) Then 
       ResetValue (b:BackgroundColor);
       ResetImage (b);
   });
@@ -159,342 +163,6 @@ MakeFunction(reset, [], {
   ResetImage(txtLevantar);
 });
 
-/* Inicializa instancias del juego */
-MakeFunction (init, [], {
-  init_oro();
-  init_basto();
-  init_copa();
-  init_espada();
-});
-
-
-MakeFunction (init_oro, [], {
-           /*************************************
-            ****  INSTANCE: o1
-            *************************************/
-    MakeInstance( o1, Carta );
-    o1:palo = oro;
-    o1:valor = 1;
-    
-           /*************************************
-            ****  INSTANCE: o2
-            *************************************/
-    MakeInstance( o2, Carta );
-    o2:palo = oro;
-    o2:valor = 2;
-    
-           /*************************************
-            ****  INSTANCE: o3
-            *************************************/
-    MakeInstance( o3, Carta );
-    o3:palo = oro;
-    o3:valor = 3;
-    
-           /*************************************
-            ****  INSTANCE: o4
-            *************************************/
-    MakeInstance( o4, Carta );
-    o4:palo = oro;
-    o4:valor = 4;
-    
-           /*************************************
-            ****  INSTANCE: o5
-            *************************************/
-    MakeInstance( o5, Carta );
-    o5:palo = oro;
-    o5:valor = 5;
-    
-           /*************************************
-            ****  INSTANCE: o6
-            *************************************/
-    MakeInstance( o6, Carta );
-    o6:palo = oro;
-    o6:valor = 6;
-    
-           /*************************************
-            ****  INSTANCE: o7
-            *************************************/
-    MakeInstance( o7, Carta );
-    o7:palo = oro;
-    o7:valor = 7;
-    
-           /*************************************
-            ****  INSTANCE: o8
-            *************************************/
-    MakeInstance( o8, Carta );
-    o8:palo = oro;
-    o8:valor = 8;
-           /*************************************
-            ****  INSTANCE: o9
-            *************************************/
-    MakeInstance( o9, Carta );
-    o9:palo = oro;
-    o9:valor = 9;
-           /*************************************
-            ****  INSTANCE: o10
-            *************************************/
-    MakeInstance( o10, Carta );
-    o10:palo = oro;
-    o10:valor = 10;
-           /*************************************
-            ****  INSTANCE: o11
-            *************************************/
-    MakeInstance( o11, Carta );
-    o11:palo = oro;
-    o11:valor = 11;
-           /*************************************
-            ****  INSTANCE: o12
-            *************************************/
-    MakeInstance( o12, Carta );
-    o12:palo = oro;
-    o12:valor = 12;
-}); 
-
-MakeFunction (init_basto, [], {
-           /*************************************
-            ****  INSTANCE: b1
-            *************************************/
-    MakeInstance( b1, Carta );
-    b1:palo = basto;
-    b1:valor = 1;
-    
-           /*************************************
-            ****  INSTANCE: b2
-            *************************************/
-    MakeInstance( b2, Carta );
-    b2:palo = basto;
-    b2:valor = 2;
-    
-           /*************************************
-            ****  INSTANCE: b3
-            *************************************/
-    MakeInstance( b3, Carta );
-    b3:palo = basto;
-    b3:valor = 3;
-    
-           /*************************************
-            ****  INSTANCE: b4
-            *************************************/
-    MakeInstance( b4, Carta );
-    b4:palo = basto;
-    b4:valor = 4;
-    
-           /*************************************
-            ****  INSTANCE: b5
-            *************************************/
-    MakeInstance( b5, Carta );
-    b5:palo = basto;
-    b5:valor = 5;
-    
-           /*************************************
-            ****  INSTANCE: b6
-            *************************************/
-    MakeInstance( b6, Carta );
-    b6:palo = basto;
-    b6:valor = 6;
-    
-           /*************************************
-            ****  INSTANCE: b7
-            *************************************/
-    MakeInstance( b7, Carta );
-    b7:palo = basto;
-    b7:valor = 7;
-    
-           /*************************************
-            ****  INSTANCE: b8
-            *************************************/
-    MakeInstance( b8, Carta );
-    b8:palo = basto;
-    b8:valor = 8;
-           /*************************************
-            ****  INSTANCE: b9
-            *************************************/
-    MakeInstance( b9, Carta );
-    b9:palo = basto;
-    b9:valor = 9;
-           /*************************************
-            ****  INSTANCE: b10
-            *************************************/
-    MakeInstance( b10, Carta );
-    b10:palo = basto;
-    b10:valor = 10;
-           /*************************************
-            ****  INSTANCE: b11
-            *************************************/
-    MakeInstance( b11, Carta );
-    b11:palo = basto;
-    b11:valor = 11;
-           /*************************************
-            ****  INSTANCE: b12
-            *************************************/
-    MakeInstance( b12, Carta );
-    b12:palo = basto;
-    b12:valor = 12;
-}); 
-
-MakeFunction (init_espada, [], {
-           /*************************************
-            ****  INSTANCE: e1
-            *************************************/
-    MakeInstance( e1, Carta );
-    e1:palo = espada;
-    e1:valor = 1;
-    
-           /*************************************
-            ****  INSTANCE: e2
-            *************************************/
-    MakeInstance( e2, Carta );
-    e2:palo = espada;
-    e2:valor = 2;
-    
-           /*************************************
-            ****  INSTANCE: e3
-            *************************************/
-    MakeInstance( e3, Carta );
-    e3:palo = espada;
-    e3:valor = 3;
-    
-           /*************************************
-            ****  INSTANCE: e4
-            *************************************/
-    MakeInstance( e4, Carta );
-    e4:palo = espada;
-    e4:valor = 4;
-    
-           /*************************************
-            ****  INSTANCE: e5
-            *************************************/
-    MakeInstance( e5, Carta );
-    e5:palo = espada;
-    e5:valor = 5;
-    
-           /*************************************
-            ****  INSTANCE: e6
-            *************************************/
-    MakeInstance( e6, Carta );
-    e6:palo = espada;
-    e6:valor = 6;
-    
-           /*************************************
-            ****  INSTANCE: e7
-            *************************************/
-    MakeInstance( e7, Carta );
-    e7:palo = espada;
-    e7:valor = 7;
-    
-           /*************************************
-            ****  INSTANCE: e8
-            *************************************/
-    MakeInstance( e8, Carta );
-    e8:palo = espada;
-    e8:valor = 8;
-           /*************************************
-            ****  INSTANCE: e9
-            *************************************/
-    MakeInstance( e9, Carta );
-    e9:palo = espada;
-    e9:valor = 9;
-           /*************************************
-            ****  INSTANCE: e10
-            *************************************/
-    MakeInstance( e10, Carta );
-    e10:palo = espada;
-    e10:valor = 10;
-           /*************************************
-            ****  INSTANCE: e11
-            *************************************/
-    MakeInstance( e11, Carta );
-    e11:palo = espada;
-    e11:valor = 11;
-           /*************************************
-            ****  INSTANCE: e12
-            *************************************/
-    MakeInstance( e12, Carta );
-    e12:palo = espada;
-    e12:valor = 12;
-}); 
-
-MakeFunction (init_copa, [], {
-           /*************************************
-            ****  INSTANCE: c1
-            *************************************/
-    MakeInstance( c1, Carta );
-    c1:palo = copa;
-    c1:valor = 1;
-    
-           /*************************************
-            ****  INSTANCE: c2
-            *************************************/
-    MakeInstance( c2, Carta );
-    c2:palo = copa;
-    c2:valor = 2;
-    
-           /*************************************
-            ****  INSTANCE: c3
-            *************************************/
-    MakeInstance( c3, Carta );
-    c3:palo = copa;
-    c3:valor = 3;
-    
-           /*************************************
-            ****  INSTANCE: c4
-            *************************************/
-    MakeInstance( c4, Carta );
-    c4:palo = copa;
-    c4:valor = 4;
-    
-           /*************************************
-            ****  INSTANCE: c5
-            *************************************/
-    MakeInstance( c5, Carta );
-    c5:palo = copa;
-    c5:valor = 5;
-    
-           /*************************************
-            ****  INSTANCE: c6
-            *************************************/
-    MakeInstance( c6, Carta );
-    c6:palo = copa;
-    c6:valor = 6;
-    
-           /*************************************
-            ****  INSTANCE: c7
-            *************************************/
-    MakeInstance( c7, Carta );
-    c7:palo = copa;
-    c7:valor = 7;
-    
-           /*************************************
-            ****  INSTANCE: c8
-            *************************************/
-    MakeInstance( c8, Carta );
-    c8:palo = copa;
-    c8:valor = 8;
-           /*************************************
-            ****  INSTANCE: c9
-            *************************************/
-    MakeInstance( c9, Carta );
-    c9:palo = copa;
-    c9:valor = 9;
-           /*************************************
-            ****  INSTANCE: c10
-            *************************************/
-    MakeInstance( c10, Carta );
-    c10:palo = copa;
-    c10:valor = 10;
-           /*************************************
-            ****  INSTANCE: c11
-            *************************************/
-    MakeInstance( c11, Carta );
-    c11:palo = copa;
-    c11:valor = 11;
-           /*************************************
-            ****  INSTANCE: c12
-            *************************************/
-    MakeInstance( c12, Carta );
-    c12:palo = copa;
-    c12:valor = 12;
-});
 /*********************************************************/
 /**         ALL CLASSES ARE SAVED BELOW             **/
 /*********************************************************/
@@ -684,9 +352,9 @@ SetSlotOption( Reglas:tirar, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:tirar, MULTIPLE );
 SetValue ( Reglas:tirar, R30);
 
-MakeSlot( Button, InstanceList );
-SetSlotOption( Button, InstanceList, MULTIPLE );
-
+MakeSlot( Button:InstanceList );
+SetSlotOption( Button:InstanceList, VALUE_TYPE, OBJECT );
+SetSlotOption( Button:InstanceList, MULTIPLE );
 /*********************************************************/
 /**         ALL INSTANCES ARE SAVED BELOW             **/
 /*********************************************************/
@@ -708,16 +376,10 @@ SESSION:Title = "Sistema experto en Chinchon";
         **** Sirve para resetear las clases
         *************************************/
 MakeInstance (Auxiliar, Root);
-MakeSlot (Auxiliar, Clases );
-SetSlotOption( Auxiliar, Clases, MULTIPLE );
-SetSlotOption( Auxiliar:Clases, VALUE_TYPE, TEXT );
-AppendToList(Auxiliar:Clases, Carta, Jugador);
-MakeSlot (Auxiliar, Instancias );
-SetSlotOption( Auxiliar:Instancias, MULTIPLE );
-SetSlotOption( Auxiliar:Instancias, VALUE_TYPE, OBJECT );
-MakeSlot (Auxiliar, Slots );
-SetSlotOption( Auxiliar:Slots, MULTIPLE );
-SetSlotOption( Auxiliar:Slots, VALUE_TYPE, TEXT );
+MakeSlot (Auxiliar, carta_seleccionada );
+SetSlotOption( Auxiliar:carta_seleccionada, VALUE_TYPE, TEXT );
+MakeSlot (Auxiliar, carta_mesa );
+SetSlotOption( Auxiliar:carta_mesa, VALUE_TYPE, TEXT );
 
        /*************************************
         ****  INSTANCE: j
@@ -728,6 +390,7 @@ MakeInstance( j, Jugador );
         ****  INSTANCE: pj
         *************************************/
 MakeInstance( pj, PJ );
+SetValue( pj:recomendado_a, j);
 
        /*************************************
         ****  INSTANCE: btnreset
@@ -759,10 +422,12 @@ SetValue( btn1oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn1oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn1oro:BackgroundColor2, 255, 255, 255 );
 btn1oro:Action = seleccionar_cartas;
-MakeSlot( btn1oro:carta );
-SetSlotOption( btn1oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn1oro:carta, ALLOWABLE_CLASSES, Carta );
-btn1oro:carta = o1;
+MakeSlot( btn1oro:valor );
+MakeSlot( btn1oro:palo );
+SetSlotOption( btn1oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn1oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn1oro:valor, 1);
+SetValue ( btn1oro:palo, oro);
  ResetImage (  btn1oro  ); 
 
        /*************************************
@@ -778,11 +443,13 @@ SetValue( btn2oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn2oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn2oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn2oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn2oro:carta );
-SetSlotOption( btn2oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn2oro:carta, ALLOWABLE_CLASSES, Carta );
-btn2oro:carta = o2;
 btn2oro:Action = seleccionar_cartas;
+MakeSlot( btn2oro:valor );
+MakeSlot( btn2oro:palo );
+SetSlotOption( btn2oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn2oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn2oro:valor, 2);
+SetValue ( btn2oro:palo, oro);
  ResetImage (  btn2oro  ); 
 
        /*************************************
@@ -798,11 +465,13 @@ SetValue( btn3oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn3oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn3oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn3oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn3oro:carta );
-SetSlotOption( btn3oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn3oro:carta, ALLOWABLE_CLASSES, Carta );
-btn3oro:carta = o3;
 btn3oro:Action = seleccionar_cartas;
+MakeSlot( btn3oro:valor );
+MakeSlot( btn3oro:palo );
+SetSlotOption( btn3oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn3oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn3oro:valor, 3);
+SetValue ( btn3oro:palo, oro);
  ResetImage (  btn3oro  ); 
 
        /*************************************
@@ -818,11 +487,13 @@ SetValue( btn4oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn4oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn4oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn4oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn4oro:carta );
-SetSlotOption( btn4oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn4oro:carta, ALLOWABLE_CLASSES, Carta );
-btn4oro:carta = o4;
 btn4oro:Action = seleccionar_cartas;
+MakeSlot( btn4oro:valor );
+MakeSlot( btn4oro:palo );
+SetSlotOption( btn4oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn4oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn4oro:valor, 4);
+SetValue ( btn4oro:palo, oro);
  ResetImage (  btn4oro  ); 
 
        /*************************************
@@ -838,11 +509,13 @@ SetValue( btn5oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn5oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn5oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn5oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn5oro:carta );
-SetSlotOption( btn5oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn5oro:carta, ALLOWABLE_CLASSES, Carta );
-btn5oro:carta = o5;
 btn5oro:Action = seleccionar_cartas;
+MakeSlot( btn5oro:valor );
+MakeSlot( btn5oro:palo );
+SetSlotOption( btn5oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn5oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn5oro:valor, 5);
+SetValue ( btn5oro:palo, oro);
  ResetImage (  btn5oro  ); 
 
        /*************************************
@@ -858,11 +531,13 @@ SetValue( btn6oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn6oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn6oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn6oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn6oro:carta );
-SetSlotOption( btn6oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn6oro:carta, ALLOWABLE_CLASSES, Carta );
-btn6oro:carta = o6;
 btn6oro:Action = seleccionar_cartas;
+MakeSlot( btn6oro:valor );
+MakeSlot( btn6oro:palo );
+SetSlotOption( btn6oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn6oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn6oro:valor, 6);
+SetValue ( btn6oro:palo, oro);
  ResetImage (  btn6oro  ); 
 
        /*************************************
@@ -878,11 +553,13 @@ SetValue( btn7oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn7oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn7oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn7oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn7oro:carta );
-SetSlotOption( btn7oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn7oro:carta, ALLOWABLE_CLASSES, Carta );
-btn7oro:carta = o7;
 btn7oro:Action = seleccionar_cartas;
+MakeSlot( btn7oro:valor );
+MakeSlot( btn7oro:palo );
+SetSlotOption( btn7oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn7oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn7oro:valor, 7);
+SetValue ( btn7oro:palo, oro);
  ResetImage (  btn7oro  ); 
 
        /*************************************
@@ -898,11 +575,13 @@ SetValue( btn8oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn8oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn8oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn8oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn8oro:carta );
-SetSlotOption( btn8oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn8oro:carta, ALLOWABLE_CLASSES, Carta );
-btn8oro:carta = o8;
 btn8oro:Action = seleccionar_cartas;
+MakeSlot( btn8oro:valor );
+MakeSlot( btn8oro:palo );
+SetSlotOption( btn8oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn8oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn8oro:valor, 8);
+SetValue ( btn8oro:palo, oro);
  ResetImage (  btn8oro  ); 
 
        /*************************************
@@ -918,11 +597,13 @@ SetValue( btn9oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn9oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn9oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn9oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn9oro:carta );
-SetSlotOption( btn9oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn9oro:carta, ALLOWABLE_CLASSES, Carta );
-btn9oro:carta = o9;
 btn9oro:Action = seleccionar_cartas;
+MakeSlot( btn9oro:valor );
+MakeSlot( btn9oro:palo );
+SetSlotOption( btn9oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn9oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn9oro:valor, 9);
+SetValue ( btn9oro:palo, oro);
  ResetImage (  btn9oro  ); 
 
        /*************************************
@@ -938,11 +619,13 @@ SetValue( btn10oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn10oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn10oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn10oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn10oro:carta );
-SetSlotOption( btn10oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn10oro:carta, ALLOWABLE_CLASSES, Carta );
-btn10oro:carta = o10;
 btn10oro:Action = seleccionar_cartas;
+MakeSlot( btn10oro:valor );
+MakeSlot( btn10oro:palo );
+SetSlotOption( btn10oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn10oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn10oro:valor, 10);
+SetValue ( btn10oro:palo, oro);
  ResetImage (  btn10oro  ); 
 
        /*************************************
@@ -956,13 +639,15 @@ btn11oro:X = 50;
 btn11oro:Y = 314;
 SetValue( btn11oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn11oro:BackgroundColor, 212, 208, 200 );
+btn11oro:Action = seleccionar_cartas;
 SetValue( btn11oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn11oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn11oro:carta );
-SetSlotOption( btn11oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn11oro:carta, ALLOWABLE_CLASSES, Carta );
-btn11oro:carta = o11;
-btn11oro:Action = seleccionar_cartas;
+MakeSlot( btn11oro:valor );
+MakeSlot( btn11oro:palo );
+SetSlotOption( btn11oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn11oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn11oro:valor, 11);
+SetValue ( btn11oro:palo, oro);
  ResetImage (  btn11oro  ); 
 
        /*************************************
@@ -978,11 +663,13 @@ SetValue( btn12oro:ForegroundColor, 0, 0, 0 );
 SetValue( btn12oro:BackgroundColor, 212, 208, 200 );
 SetValue( btn12oro:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12oro:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn12oro:carta );
-SetSlotOption( btn12oro:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn12oro:carta, ALLOWABLE_CLASSES, Carta );
-btn12oro:carta = o12;
 btn12oro:Action = seleccionar_cartas;
+MakeSlot( btn12oro:valor );
+MakeSlot( btn12oro:palo );
+SetSlotOption( btn12oro:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn12oro:palo, VALUE_TYPE, TEXT );
+SetValue ( btn12oro:valor, 12);
+SetValue ( btn12oro:palo, oro);
  ResetImage (  btn12oro  ); 
 
        /*************************************
@@ -998,11 +685,13 @@ SetValue( btn1basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn1basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn1basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn1basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn1basto:carta );
-SetSlotOption( btn1basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn1basto:carta, ALLOWABLE_CLASSES, Carta );
-btn1basto:carta = b1;
 btn1basto:Action = seleccionar_cartas;
+MakeSlot( btn1basto:valor );
+MakeSlot( btn1basto:palo );
+SetSlotOption( btn1basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn1basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn1basto:valor, 1);
+SetValue ( btn1basto:palo, basto);
  ResetImage (  btn1basto  ); 
 
        /*************************************
@@ -1018,11 +707,13 @@ SetValue( btn2basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn2basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn2basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn2basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn2basto:carta );
-SetSlotOption( btn2basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn2basto:carta, ALLOWABLE_CLASSES, Carta );
-btn2basto:carta = b2;
 btn2basto:Action = seleccionar_cartas;
+MakeSlot( btn2basto:valor );
+MakeSlot( btn2basto:palo );
+SetSlotOption( btn2basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn2basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn2basto:valor, 2);
+SetValue ( btn2basto:palo, basto);
  ResetImage (  btn2basto  ); 
 
        /*************************************
@@ -1038,11 +729,13 @@ SetValue( btn3basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn3basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn3basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn3basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn3basto:carta );
-SetSlotOption( btn3basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn3basto:carta, ALLOWABLE_CLASSES, Carta );
-btn3basto:carta = b3;
 btn3basto:Action = seleccionar_cartas;
+MakeSlot( btn3basto:valor );
+MakeSlot( btn3basto:palo );
+SetSlotOption( btn3basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn3basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn3basto:valor, 3);
+SetValue ( btn3basto:palo, basto);
  ResetImage (  btn3basto  ); 
 
        /*************************************
@@ -1058,11 +751,13 @@ SetValue( btn4basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn4basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn4basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn4basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn4basto:carta );
-SetSlotOption( btn4basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn4basto:carta, ALLOWABLE_CLASSES, Carta );
-btn4basto:carta = b4;
 btn4basto:Action = seleccionar_cartas;
+MakeSlot( btn4basto:valor );
+MakeSlot( btn4basto:palo );
+SetSlotOption( btn4basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn4basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn4basto:valor, 4);
+SetValue ( btn4basto:palo, basto);
  ResetImage (  btn4basto  ); 
 
        /*************************************
@@ -1078,11 +773,13 @@ SetValue( btn5basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn5basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn5basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn5basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn5basto:carta );
-SetSlotOption( btn5basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn5basto:carta, ALLOWABLE_CLASSES, Carta );
-btn5basto:carta = b5;
 btn5basto:Action = seleccionar_cartas;
+MakeSlot( btn5basto:valor );
+MakeSlot( btn5basto:palo );
+SetSlotOption( btn5basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn5basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn5basto:valor, 5);
+SetValue ( btn5basto:palo, basto);
  ResetImage (  btn5basto  ); 
 
        /*************************************
@@ -1098,11 +795,13 @@ SetValue( btn6basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn6basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn6basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn6basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn6basto:carta );
-SetSlotOption( btn6basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn6basto:carta, ALLOWABLE_CLASSES, Carta );
-btn6basto:carta = b6;
 btn6basto:Action = seleccionar_cartas;
+MakeSlot( btn6basto:valor );
+MakeSlot( btn6basto:palo );
+SetSlotOption( btn6basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn6basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn6basto:valor, 6);
+SetValue ( btn6basto:palo, basto);
  ResetImage (  btn6basto  ); 
 
        /*************************************
@@ -1118,11 +817,13 @@ SetValue( btn7basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn7basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn7basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn7basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn7basto:carta );
-SetSlotOption( btn7basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn7basto:carta, ALLOWABLE_CLASSES, Carta );
-btn7basto:carta = b7;
 btn7basto:Action = seleccionar_cartas;
+MakeSlot( btn7basto:valor );
+MakeSlot( btn7basto:palo );
+SetSlotOption( btn7basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn7basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn7basto:valor, 7);
+SetValue ( btn7basto:palo, basto);
  ResetImage (  btn7basto  ); 
 
        /*************************************
@@ -1138,11 +839,13 @@ SetValue( btn8basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn8basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn8basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn8basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn8basto:carta );
-SetSlotOption( btn8basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn8basto:carta, ALLOWABLE_CLASSES, Carta );
-btn8basto:carta = b8;
 btn8basto:Action = seleccionar_cartas;
+MakeSlot( btn8basto:valor );
+MakeSlot( btn8basto:palo );
+SetSlotOption( btn8basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn8basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn8basto:valor, 8);
+SetValue ( btn8basto:palo, basto);
  ResetImage (  btn8basto  ); 
 
        /*************************************
@@ -1158,11 +861,13 @@ SetValue( btn9basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn9basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn9basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn9basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn9basto:carta );
-SetSlotOption( btn9basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn9basto:carta, ALLOWABLE_CLASSES, Carta );
-btn9basto:carta = b9;
 btn9basto:Action = seleccionar_cartas;
+MakeSlot( btn9basto:valor );
+MakeSlot( btn9basto:palo );
+SetSlotOption( btn9basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn9basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn9basto:valor, 9);
+SetValue ( btn9basto:palo, basto);
  ResetImage (  btn9basto  ); 
 
        /*************************************
@@ -1178,11 +883,13 @@ SetValue( btn10basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn10basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn10basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn10basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn10basto:carta );
-SetSlotOption( btn10basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn10basto:carta, ALLOWABLE_CLASSES, Carta );
-btn10basto:carta = b10;
 btn10basto:Action = seleccionar_cartas;
+MakeSlot( btn10basto:valor );
+MakeSlot( btn10basto:palo );
+SetSlotOption( btn10basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn10basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn10basto:valor, 10);
+SetValue ( btn10basto:palo, basto);
  ResetImage (  btn10basto  ); 
 
        /*************************************
@@ -1198,11 +905,13 @@ SetValue( btn11basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn11basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn11basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn11basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn11basto:carta );
-SetSlotOption( btn11basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn11basto:carta, ALLOWABLE_CLASSES, Carta );
-btn11basto:carta = b11;
 btn11basto:Action = seleccionar_cartas;
+MakeSlot( btn11basto:valor );
+MakeSlot( btn11basto:palo );
+SetSlotOption( btn11basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn11basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn11basto:valor, 11);
+SetValue ( btn11basto:palo, basto);
  ResetImage (  btn11basto  ); 
 
        /*************************************
@@ -1218,11 +927,13 @@ SetValue( btn12basto:ForegroundColor, 0, 0, 0 );
 SetValue( btn12basto:BackgroundColor, 212, 208, 200 );
 SetValue( btn12basto:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12basto:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn12basto:carta );
-SetSlotOption( btn12basto:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn12basto:carta, ALLOWABLE_CLASSES, Carta );
-btn12basto:carta = b12;
 btn12basto:Action = seleccionar_cartas;
+MakeSlot( btn12basto:valor );
+MakeSlot( btn12basto:palo );
+SetSlotOption( btn12basto:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn12basto:palo, VALUE_TYPE, TEXT );
+SetValue ( btn12basto:valor, 12);
+SetValue ( btn12basto:palo, basto);
  ResetImage (  btn12basto  ); 
 
        /*************************************
@@ -1238,11 +949,13 @@ SetValue( btn1copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn1copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn1copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn1copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn1copa:carta );
-SetSlotOption( btn1copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn1copa:carta, ALLOWABLE_CLASSES, Carta );
-btn1copa:carta = c1;
 btn1copa:Action = seleccionar_cartas;
+MakeSlot( btn1copa:valor );
+MakeSlot( btn1copa:palo );
+SetSlotOption( btn1copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn1copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn1copa:valor, 1);
+SetValue ( btn1copa:palo, copa);
  ResetImage (  btn1copa  ); 
 
        /*************************************
@@ -1258,11 +971,13 @@ SetValue( btn2copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn2copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn2copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn2copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn2copa:carta );
-SetSlotOption( btn2copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn2copa:carta, ALLOWABLE_CLASSES, Carta );
-btn2copa:carta = c2;
 btn2copa:Action = seleccionar_cartas;
+MakeSlot( btn2copa:valor );
+MakeSlot( btn2copa:palo );
+SetSlotOption( btn2copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn2copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn2copa:valor, 2);
+SetValue ( btn2copa:palo, copa);
  ResetImage (  btn2copa  ); 
 
        /*************************************
@@ -1278,11 +993,13 @@ SetValue( btn3copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn3copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn3copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn3copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn3copa:carta );
-SetSlotOption( btn3copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn3copa:carta, ALLOWABLE_CLASSES, Carta );
-btn3copa:carta = c3;
 btn3copa:Action = seleccionar_cartas;
+MakeSlot( btn3copa:valor );
+MakeSlot( btn3copa:palo );
+SetSlotOption( btn3copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn3copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn3copa:valor, 3);
+SetValue ( btn3copa:palo, copa);
  ResetImage (  btn3copa  ); 
 
        /*************************************
@@ -1298,11 +1015,13 @@ SetValue( btn4copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn4copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn4copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn4copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn4copa:carta );
-SetSlotOption( btn4copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn4copa:carta, ALLOWABLE_CLASSES, Carta );
-btn4copa:carta = c4;
 btn4copa:Action = seleccionar_cartas;
+MakeSlot( btn4copa:valor );
+MakeSlot( btn4copa:palo );
+SetSlotOption( btn4copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn4copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn4copa:valor, 4);
+SetValue ( btn4copa:palo, copa);
  ResetImage (  btn4copa  ); 
 
        /*************************************
@@ -1318,11 +1037,13 @@ SetValue( btn5copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn5copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn5copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn5copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn5copa:carta );
-SetSlotOption( btn5copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn5copa:carta, ALLOWABLE_CLASSES, Carta );
-btn5copa:carta = c5;
 btn5copa:Action = seleccionar_cartas;
+MakeSlot( btn5copa:valor );
+MakeSlot( btn5copa:palo );
+SetSlotOption( btn5copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn5copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn5copa:valor, 5);
+SetValue ( btn5copa:palo, copa);
  ResetImage (  btn5copa  ); 
 
        /*************************************
@@ -1338,11 +1059,13 @@ SetValue( btn6copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn6copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn6copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn6copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn6copa:carta );
-SetSlotOption( btn6copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn6copa:carta, ALLOWABLE_CLASSES, Carta );
-btn6copa:carta = c6;
 btn6copa:Action = seleccionar_cartas;
+MakeSlot( btn6copa:valor );
+MakeSlot( btn6copa:palo );
+SetSlotOption( btn6copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn6copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn6copa:valor, 6);
+SetValue ( btn6copa:palo, copa);
  ResetImage (  btn6copa  ); 
 
        /*************************************
@@ -1358,11 +1081,13 @@ SetValue( btn7copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn7copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn7copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn7copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn7copa:carta );
-SetSlotOption( btn7copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn7copa:carta, ALLOWABLE_CLASSES, Carta );
-btn7copa:carta = c7;
 btn7copa:Action = seleccionar_cartas;
+MakeSlot( btn7copa:valor );
+MakeSlot( btn7copa:palo );
+SetSlotOption( btn7copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn7copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn7copa:valor, 7);
+SetValue ( btn7copa:palo, copa);
  ResetImage (  btn7copa  ); 
 
        /*************************************
@@ -1378,11 +1103,13 @@ SetValue( btn8copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn8copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn8copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn8copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn8copa:carta );
-SetSlotOption( btn8copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn8copa:carta, ALLOWABLE_CLASSES, Carta );
-btn8copa:carta = c8;
 btn8copa:Action = seleccionar_cartas;
+MakeSlot( btn8copa:valor );
+MakeSlot( btn8copa:palo );
+SetSlotOption( btn8copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn8copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn8copa:valor, 8);
+SetValue ( btn8copa:palo, copa);
  ResetImage (  btn8copa  ); 
 
        /*************************************
@@ -1398,11 +1125,13 @@ SetValue( btn9copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn9copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn9copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn9copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn9copa:carta );
-SetSlotOption( btn9copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn9copa:carta, ALLOWABLE_CLASSES, Carta );
-btn9copa:carta = c9;
 btn9copa:Action = seleccionar_cartas;
+MakeSlot( btn9copa:valor );
+MakeSlot( btn9copa:palo );
+SetSlotOption( btn9copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn9copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn9copa:valor, 9);
+SetValue ( btn9copa:palo, copa);
  ResetImage (  btn9copa  ); 
 
        /*************************************
@@ -1418,11 +1147,13 @@ SetValue( btn10copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn10copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn10copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn10copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn10copa:carta );
-SetSlotOption( btn10copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn10copa:carta, ALLOWABLE_CLASSES, Carta );
-btn10copa:carta = c10;
 btn10copa:Action = seleccionar_cartas;
+MakeSlot( btn10copa:valor );
+MakeSlot( btn10copa:palo );
+SetSlotOption( btn10copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn10copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn10copa:valor, 10);
+SetValue ( btn10copa:palo, copa);
  ResetImage (  btn10copa  ); 
 
        /*************************************
@@ -1438,11 +1169,13 @@ SetValue( btn11copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn11copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn11copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn11copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn11copa:carta );
-SetSlotOption( btn11copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn11copa:carta, ALLOWABLE_CLASSES, Carta );
-btn11copa:carta = c11;
 btn11copa:Action = seleccionar_cartas;
+MakeSlot( btn11copa:valor );
+MakeSlot( btn11copa:palo );
+SetSlotOption( btn11copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn11copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn11copa:valor, 11);
+SetValue ( btn11copa:palo, copa);
  ResetImage (  btn11copa  ); 
 
        /*************************************
@@ -1458,11 +1191,13 @@ SetValue( btn12copa:ForegroundColor, 0, 0, 0 );
 SetValue( btn12copa:BackgroundColor, 212, 208, 200 );
 SetValue( btn12copa:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12copa:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn12copa:carta );
-SetSlotOption( btn12copa:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn12copa:carta, ALLOWABLE_CLASSES, Carta );
-btn12copa:carta = c12;
 btn12copa:Action = seleccionar_cartas;
+MakeSlot( btn12copa:valor );
+MakeSlot( btn12copa:palo );
+SetSlotOption( btn12copa:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn12copa:palo, VALUE_TYPE, TEXT );
+SetValue ( btn12copa:valor, 12);
+SetValue ( btn12copa:palo, copa);
  ResetImage (  btn12copa  ); 
 
        /*************************************
@@ -1478,11 +1213,13 @@ SetValue( btn1espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn1espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn1espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn1espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn1espada:carta );
-SetSlotOption( btn1espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn1espada:carta, ALLOWABLE_CLASSES, Carta );
-btn1espada:carta = e1;
 btn1espada:Action = seleccionar_cartas;
+MakeSlot( btn1espada:valor );
+MakeSlot( btn1espada:palo );
+SetSlotOption( btn1espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn1espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn1espada:valor, 1);
+SetValue ( btn1espada:palo, espada);
  ResetImage (  btn1espada  ); 
 
        /*************************************
@@ -1498,11 +1235,13 @@ SetValue( btn2espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn2espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn2espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn2espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn2espada:carta );
-SetSlotOption( btn2espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn2espada:carta, ALLOWABLE_CLASSES, Carta );
-btn2espada:carta = e2;
 btn2espada:Action = seleccionar_cartas;
+MakeSlot( btn2espada:valor );
+MakeSlot( btn2espada:palo );
+SetSlotOption( btn2espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn2espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn2espada:valor, 2);
+SetValue ( btn2espada:palo, espada);
  ResetImage (  btn2espada  ); 
 
        /*************************************
@@ -1518,11 +1257,13 @@ SetValue( btn3espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn3espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn3espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn3espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn3espada:carta );
-SetSlotOption( btn3espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn3espada:carta, ALLOWABLE_CLASSES, Carta );
-btn3espada:carta = e3;
 btn3espada:Action = seleccionar_cartas;
+MakeSlot( btn3espada:valor );
+MakeSlot( btn3espada:palo );
+SetSlotOption( btn3espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn3espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn3espada:valor, 3);
+SetValue ( btn3espada:palo, espada);
  ResetImage (  btn3espada  ); 
 
        /*************************************
@@ -1538,11 +1279,13 @@ SetValue( btn4espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn4espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn4espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn4espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn4espada:carta );
-SetSlotOption( btn4espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn4espada:carta, ALLOWABLE_CLASSES, Carta );
-btn4espada:carta = e4;
 btn4espada:Action = seleccionar_cartas;
+MakeSlot( btn4espada:valor );
+MakeSlot( btn4espada:palo );
+SetSlotOption( btn4espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn4espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn4espada:valor, 4);
+SetValue ( btn4espada:palo, espada);
  ResetImage (  btn4espada  ); 
 
        /*************************************
@@ -1558,11 +1301,13 @@ SetValue( btn5espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn5espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn5espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn5espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn5espada:carta );
-SetSlotOption( btn5espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn5espada:carta, ALLOWABLE_CLASSES, Carta );
-btn5espada:carta = e5;
 btn5espada:Action = seleccionar_cartas;
+MakeSlot( btn5espada:valor );
+MakeSlot( btn5espada:palo );
+SetSlotOption( btn5espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn5espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn5espada:valor, 5);
+SetValue ( btn5espada:palo, espada);
  ResetImage (  btn5espada  ); 
 
        /*************************************
@@ -1578,11 +1323,13 @@ SetValue( btn6espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn6espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn6espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn6espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn6espada:carta );
-SetSlotOption( btn6espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn6espada:carta, ALLOWABLE_CLASSES, Carta );
-btn6espada:carta = e6;
 btn6espada:Action = seleccionar_cartas;
+MakeSlot( btn6espada:valor );
+MakeSlot( btn6espada:palo );
+SetSlotOption( btn6espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn6espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn6espada:valor, 6);
+SetValue ( btn6espada:palo, espada);
  ResetImage (  btn6espada  ); 
 
        /*************************************
@@ -1598,11 +1345,13 @@ SetValue( btn7espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn7espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn7espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn7espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn7espada:carta );
-SetSlotOption( btn7espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn7espada:carta, ALLOWABLE_CLASSES, Carta );
-btn7espada:carta = e7;
 btn7espada:Action = seleccionar_cartas;
+MakeSlot( btn7espada:valor );
+MakeSlot( btn7espada:palo );
+SetSlotOption( btn7espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn7espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn7espada:valor, 7);
+SetValue ( btn7espada:palo, espada);
  ResetImage (  btn7espada  ); 
 
        /*************************************
@@ -1618,11 +1367,13 @@ SetValue( btn8espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn8espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn8espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn8espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn8espada:carta );
-SetSlotOption( btn8espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn8espada:carta, ALLOWABLE_CLASSES, Carta );
-btn8espada:carta = e8;
 btn8espada:Action = seleccionar_cartas;
+MakeSlot( btn8espada:valor );
+MakeSlot( btn8espada:palo );
+SetSlotOption( btn8espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn8espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn8espada:valor, 8);
+SetValue ( btn8espada:palo, espada);
  ResetImage (  btn8espada  ); 
 
        /*************************************
@@ -1638,11 +1389,13 @@ SetValue( btn9espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn9espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn9espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn9espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn9espada:carta );
-SetSlotOption( btn9espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn9espada:carta, ALLOWABLE_CLASSES, Carta );
-btn9espada:carta = e9;
 btn9espada:Action = seleccionar_cartas;
+MakeSlot( btn9espada:valor );
+MakeSlot( btn9espada:palo );
+SetSlotOption( btn9espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn9espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn9espada:valor, 9);
+SetValue ( btn9espada:palo, espada);
  ResetImage (  btn9espada  ); 
 
        /*************************************
@@ -1658,11 +1411,13 @@ SetValue( btn10espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn10espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn10espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn10espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn10espada:carta );
-SetSlotOption( btn10espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn10espada:carta, ALLOWABLE_CLASSES, Carta );
-btn10espada:carta = e10;
 btn10espada:Action = seleccionar_cartas;
+MakeSlot( btn10espada:valor );
+MakeSlot( btn10espada:palo );
+SetSlotOption( btn10espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn10espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn10espada:valor, 10);
+SetValue ( btn10espada:palo, espada);
  ResetImage (  btn10espada  ); 
 
        /*************************************
@@ -1678,11 +1433,13 @@ SetValue( btn11espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn11espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn11espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn11espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn11espada:carta );
-SetSlotOption( btn11espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn11espada:carta, ALLOWABLE_CLASSES, Carta );
-btn11espada:carta = e11;
 btn11espada:Action = seleccionar_cartas;
+MakeSlot( btn11espada:valor );
+MakeSlot( btn11espada:palo );
+SetSlotOption( btn11espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn11espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn11espada:valor, 11);
+SetValue ( btn11espada:palo, espada);
  ResetImage (  btn11espada  ); 
 
        /*************************************
@@ -1698,11 +1455,13 @@ SetValue( btn12espada:ForegroundColor, 0, 0, 0 );
 SetValue( btn12espada:BackgroundColor, 212, 208, 200 );
 SetValue( btn12espada:ForegroundColor2, 0, 0, 0 );
 SetValue( btn12espada:BackgroundColor2, 255, 255, 255 );
-MakeSlot( btn12espada:carta );
-SetSlotOption( btn12espada:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( btn12espada:carta, ALLOWABLE_CLASSES, Carta );
-btn12espada:carta = e12;
 btn12espada:Action = seleccionar_cartas;
+MakeSlot( btn12espada:valor );
+MakeSlot( btn12espada:palo );
+SetSlotOption( btn12espada:valor, VALUE_TYPE, TEXT );
+SetSlotOption( btn12espada:palo, VALUE_TYPE, TEXT );
+SetValue ( btn12espada:valor, 12);
+SetValue ( btn12espada:palo, espada);
  ResetImage (  btn12espada  ); 
 
        /*************************************
@@ -1773,8 +1532,8 @@ GetInstanceList (Button, Button:InstanceList);
         ****  RULE: R01
         *************************************/
 MakeRule( R01, [jugador|Jugador carta|Carta pj|PJ],
-    jugador:cartas_emparejadas == 6 And carta:ubicacion #= JUGADOR1 And 
-    carta:valor > 5,
+    jugador:cartas_emparejadas == 6 And LengthList(carta:grupo) == 0 And
+    carta:ubicacion #= JUGADOR1 And carta:valor > 5,
     pj:cortar = FALSE );
 
        /*************************************
@@ -1806,7 +1565,8 @@ MakeRule( R04, [jugador|Jugador pj|PJ],
 MakeRule( R10, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
     c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
     c1:valor == c2:valor And c1:valor == c3:valor And
-    Not( c1:palo #= c2:palo ) And Not( c1:palo #= c3:palo ) And Not( c3:palo #= c2:palo ),
+    Not( c1:palo #= c2:palo ) And Not( c1:palo #= c3:palo ) And Not( c3:palo #= c2:palo )
+    And LengthList(c1:grupo) == 0 And LengthList(c2:grupo) == 0 And LengthList(c3:grupo) == 0,
     {
     jugador:cartas_emparejadas += 3;
     AppendToList( c1:grupo, c2 );
@@ -1823,8 +1583,8 @@ MakeRule( R10, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
 MakeRule( R11, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
     c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
     c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 )
-        And c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo
-        #= c2:palo,
+        And c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo #= c2:palo
+    And LengthList(c1:grupo) == 0 And LengthList(c2:grupo) == 0 And LengthList(c3:grupo) == 0,
     {
     jugador:cartas_emparejadas += 3;
     AppendToList( c1:grupo, c2 );
@@ -1845,7 +1605,9 @@ MakeRule( R12, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
         c1:valor == c4:valor And Not( c1:palo #= c2:palo )
         And Not( c1:palo #= c3:palo ) And Not( c1:palo #= c4:palo )
         And Not( c2:palo #= c3:palo ) And Not( c2:palo #= c4:palo )
-        And Not( c3:palo #= c4:palo ),
+        And Not( c3:palo #= c4:palo )
+        And LengthList(c1:grupo) == 0 And LengthList(c2:grupo) == 0 And LengthList(c3:grupo) == 0
+        And LengthList(c4:grupo) == 0,
     {
     jugador:cartas_emparejadas += 4;
     AppendToList( c1:grupo, c2 );
@@ -1861,6 +1623,7 @@ MakeRule( R12, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
     AppendToList( c4:grupo, c2 );
     AppendToList( c4:grupo, c3 );
     } );
+SetRulePriority(R12, 2);
 
        /*************************************
         ****  RULE: R13
@@ -1871,7 +1634,9 @@ MakeRule( R13, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
     c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor +
                                                        2 )
         And c1:valor == ( c4:valor + 3 ) And c1:palo #= c2:palo
-        And c1:palo #= c3:palo And c1:palo #= c4:palo,
+        And c1:palo #= c3:palo And c1:palo #= c4:palo
+        And LengthList(c1:grupo) == 0 And LengthList(c2:grupo) == 0 And LengthList(c3:grupo) == 0
+        And LengthList(c4:grupo) == 0,
     {
     jugador:cartas_emparejadas += 3;
     AppendToList( c1:grupo, c2 );
@@ -1887,6 +1652,7 @@ MakeRule( R13, [c1|Carta c2|Carta c3|Carta c4|Carta jugador|Jugador],
     AppendToList( c4:grupo, c2 );
     AppendToList( c4:grupo, c3 );
     } );
+SetRulePriority(R13, 2);
 
        /*************************************
         ****  RULE: R14
@@ -1945,6 +1711,7 @@ MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta j
     AppendToList( c7:grupo, c5 );
     AppendToList( c7:grupo, c6 );
     } ); 
+SetRulePriority(R14, 3);
 
        /*************************************
         ****  RULE: R20
@@ -1988,7 +1755,6 @@ MakeRule( R30, [c|Carta],
         SetValue (pj:carta, c);
     });
 
-init();
 /*********************************************************/
 /**         ALL GOALS ARE SAVED BELOW             **/
 /*********************************************************/
