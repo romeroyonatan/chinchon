@@ -10,10 +10,12 @@
         *************************************/
 MakeFunction( seleccionar_cartas, [boton], {
     /* Creo instancia de la carta */
-    MakeInstance( boton:palo#boton:valor, Carta);
-    SetValue (Auxiliar:carta_seleccionada, boton:palo#boton:valor);
-    SetValue (Auxiliar:carta_seleccionada:valor, boton:valor);
-    SetValue (Auxiliar:carta_seleccionada:palo, boton:palo);
+    If( Not( Instance?( boton:palo#boton:valor ) ) ) Then {
+        MakeInstance( boton:palo#boton:valor, Carta);
+        SetValue (Auxiliar:carta_seleccionada, boton:palo#boton:valor);
+        SetValue (Auxiliar:carta_seleccionada:valor, boton:valor);
+        SetValue (Auxiliar:carta_seleccionada:palo, boton:palo);
+    };
 
     /* verifico que no seleccione 2 veces la misma carta */
     If (Member?(j:posee, Auxiliar:carta_seleccionada)) Then {
@@ -73,8 +75,8 @@ MakeFunction( seleccionar_cartas, [boton], {
                ResetValue (b:BackgroundColor);
                ResetImage (b);
                /* la borro de la lista de cartas del jugador */
-               If(Member?(pj:recomendado_a:posee, pj:carta)) Then 
-                    RemoveFromList (pj:recomendado_a:posee, pj:carta);
+               If(Member?(j:posee, pj:carta)) Then 
+                    RemoveFromList (j:posee, pj:carta);
                /* borro instancia de la carta */
                DeleteInstance(pj:carta); 
                pj:carta = NULL;
@@ -104,9 +106,10 @@ MakeFunction( seleccionar_cartas, [boton], {
           SetValue( boton:BackgroundColor, 255, 127, 80 );
           
           /* Limpio valores de jugada anterior */
-          ResetValue(pj:mazo);
-          ResetValue(pj:carta);
-          ResetValue(pj:cortar);
+          ResetValue( pj:mazo );
+          ResetValue( pj:carta );
+          ResetValue( pj:cortar );
+          SortList( j:posee );
           /* inicio inferencia de proxima jugada */
           ForwardChain( [NOASSERT], chinchon, Reglas:agrupar);
           ForwardChain( [NOASSERT], terminar_mano, Reglas:cortar);
@@ -127,10 +130,7 @@ MakeFunction( seleccionar_cartas, [boton], {
           } Else {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
           };
-          /*FIXME: Cuando gana la partida, no se setea a true al tener 2 juegos
-           * de 3 
-           */
-          If (Null?(pj:cortar) Or pj:cortar) Then {
+          If (pj:cortar) Then {
             PostMessage ("Puede cortar. Felicidades, Ha ganado la mano");
             reset();
           };
@@ -351,7 +351,7 @@ SetValue ( Reglas:agrupar, R10, R11, R12, R13);
 MakeSlot( Reglas:cortar );
 SetSlotOption( Reglas:cortar, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:cortar, MULTIPLE );
-SetValue ( Reglas:cortar, R01, R02, R03, R04);
+SetValue ( Reglas:cortar, R01, R02, R03, R04, R05);
 MakeSlot( Reglas:mazo );
 SetSlotOption( Reglas:mazo, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:mazo, MULTIPLE );
@@ -1572,9 +1572,9 @@ MakeRule( R04, [jugador|Jugador pj|PJ],
         ****  RULE: R05
         *************************************/
 MakeRule( R05, [carta|Carta pj|PJ],
-    pj_recomendado_a:cartas_emparejadas == 6 And
+    pj:recomendado_a:cartas_emparejadas == 6 And
         carta:ubicacion #= JUGADOR1 And LengthList(carta:grupo) == 0  And
-        carta:valor <= 5 And pj:recomendado_a:puntos + carta:valor < 100,
+        carta:valor <= 5 And j:puntos + carta:valor < 100,
     pj:cortar = TRUE );
 
        /*************************************
