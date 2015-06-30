@@ -124,7 +124,10 @@ MakeFunction( seleccionar_cartas, [boton], {
           } Else {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
           };
-          If (pj:cortar) Then {
+          /*FIXME: Cuando gana la partida, no se setea a true al tener 2 juegos
+           * de 3 
+           */
+          If (Null?(pj:cortar) Or pj:cortar) Then {
             PostMessage ("Puede cortar. Felicidades, Ha ganado la mano");
             reset();
           };
@@ -349,11 +352,11 @@ SetValue ( Reglas:cortar, R01, R02, R03, R04);
 MakeSlot( Reglas:mazo );
 SetSlotOption( Reglas:mazo, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:mazo, MULTIPLE );
-SetValue ( Reglas:mazo, R20, R21, R22);
+SetValue ( Reglas:mazo, R20, R21, R22, R23, R24, R25);
 MakeSlot( Reglas:tirar );
 SetSlotOption( Reglas:tirar, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:tirar, MULTIPLE );
-SetValue ( Reglas:tirar, R30);
+SetValue ( Reglas:tirar, R30, R31, R32, R33, R34, R35, R36, R37);
 
 MakeSlot( Button:InstanceList );
 SetSlotOption( Button:InstanceList, VALUE_TYPE, OBJECT );
@@ -1563,6 +1566,15 @@ MakeRule( R04, [jugador|Jugador pj|PJ],
     pj:cortar = FALSE );
 
        /*************************************
+        ****  RULE: R05
+        *************************************/
+MakeRule( R05, [carta|Carta pj|PJ],
+    pj_recomendado_a:cartas_emparejadas == 6 And
+        carta:ubicacion #= JUGADOR1 And LengthList(carta:grupo) == 0  And
+        carta:valor <= 5 And pj:recomendado_a:puntos + carta:valor < 100,
+    pj:cortar = TRUE );
+
+       /*************************************
         ****  RULE: R10
         *************************************/
 MakeRule( R10, [c1|Carta c2|Carta c3|Carta jugador|Jugador],
@@ -1750,14 +1762,111 @@ MakeRule( R22, [c1|Carta c2|Carta c3|Carta],
     });
 
        /*************************************
+        ****  RULE: R23
+        *************************************/
+MakeRule( R23, [c1|Carta c2|Carta c3|Carta],
+    c1:ubicacion #= MAZO_DESCARTE And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
+    c1:valor == c2:valor+1 And c1:valor == c3:valor+2 And
+    c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo #= c2:palo,
+    {
+        SetValue (pj:mazo, MAZO_DESCARTE);
+    });
+
+       /*************************************
+        ****  RULE: R24
+        *************************************/
+MakeRule( R24, [c1|Carta c2|Carta c3|Carta],
+    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= MAZO_DESCARTE And c3:ubicacion #= JUGADOR1 And 
+    c1:valor == c2:valor+1 And c1:valor == c3:valor+2 And
+    c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo #= c2:palo,
+    {
+        SetValue (pj:mazo, MAZO_DESCARTE);
+    });
+
+       /*************************************
+        ****  RULE: R25
+        *************************************/
+MakeRule( R25, [c1|Carta c2|Carta c3|Carta],
+    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= MAZO_DESCARTE And 
+    c1:valor == c2:valor+1 And c1:valor == c3:valor+2 And
+    c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo #= c2:palo,
+    {
+        SetValue (pj:mazo, MAZO_DESCARTE);
+    });
+       /*************************************
         ****  RULE: R30
         *************************************/
 MakeRule( R30, [c|Carta],
-    c:ubicacion #= JUGADOR1 And LengthList(c:grupo) == 0,
+    c:ubicacion #= JUGADOR1 And LengthList(c:grupo) == 0 And
+    c:valor>=10 And c:valor<=12,
+    {
+        SetValue (c:prioridad, 3);
+    });
+
+       /*************************************
+        ****  RULE: R31
+        *************************************/
+MakeRule( R31, [c|Carta],
+    c:ubicacion #= JUGADOR1 And LengthList(c:grupo) == 0 And
+    c:valor>=5 And c:valor<=9,
+    {
+        SetValue (c:prioridad, 2);
+    });
+       /*************************************
+        ****  RULE: R32
+        *************************************/
+MakeRule( R32, [c|Carta],
+    c:ubicacion #= JUGADOR1 And LengthList(c:grupo) == 0 And
+    c:valor>=3 And c:valor<=4,
+    {
+        SetValue (c:prioridad, 1);
+    });
+       /*************************************
+        ****  RULE: R33
+        *************************************/
+MakeRule( R33, [c|Carta],
+    c:ubicacion #= JUGADOR1 And LengthList(c:grupo) == 0 And
+    c:valor>=1 And c:valor<=2,
+    {
+        SetValue (c:prioridad, 1);
+    });
+
+       /*************************************
+        ****  RULE: R34
+        *************************************/
+MakeRule( R34, [c|Carta],
+    c:ubicacion #= JUGADOR1 And c:prioridad==3,
     {
         SetValue (pj:carta, c);
     });
-
+SetRulePriority(R34, 3);
+       /*************************************
+        ****  RULE: R35
+        *************************************/
+MakeRule( R35, [c|Carta],
+    c:ubicacion #= JUGADOR1 And c:prioridad==2,
+    {
+        SetValue (pj:carta, c);
+    });
+SetRulePriority(R35, 2);
+       /*************************************
+        ****  RULE: R36
+        *************************************/
+MakeRule( R36, [c|Carta],
+    c:ubicacion #= JUGADOR1 And c:prioridad==1,
+    {
+        SetValue (pj:carta, c);
+    });
+SetRulePriority(R36, 1);
+       /*************************************
+        ****  RULE: R37
+        *************************************/
+MakeRule( R37, [c|Carta],
+    c:ubicacion #= JUGADOR1 And c:prioridad==0,
+    {
+        SetValue (pj:carta, c);
+    });
+SetRulePriority(R37, 0);
 /*********************************************************/
 /**         ALL GOALS ARE SAVED BELOW             **/
 /*********************************************************/
