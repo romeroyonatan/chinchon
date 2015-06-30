@@ -15,9 +15,11 @@ MakeFunction( seleccionar_cartas, [boton], {
     SetValue (Auxiliar:carta_seleccionada:valor, boton:valor);
     SetValue (Auxiliar:carta_seleccionada:palo, boton:palo);
 
+    /* verifico que no seleccione 2 veces la misma carta */
     If (Member?(j:posee, Auxiliar:carta_seleccionada)) Then {
         PostMessage("Ya posee esta carta en su mano");
     } Else {
+
     /* Jugador selecciona sus cartas */
     If (LengthList(j:posee) < 7) Then {
         Auxiliar:carta_seleccionada:ubicacion = JUGADOR1;
@@ -26,7 +28,7 @@ MakeFunction( seleccionar_cartas, [boton], {
         If (LengthList(j:posee) == 7) Then {
             SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
             ResetImage(txtAyuda);
-            SetValue (pj:cortar, NULL); /* fuerzo a que no exista prox jugada */
+            SetValue (pj:cortar, NULL); /* fuerzo a que calcule prox jugada */
         }
 
     /* Juego en curso */
@@ -137,13 +139,14 @@ MakeFunction( seleccionar_cartas, [boton], {
 
 /* Reinicia los valores de todas las instancias para una nueva mano */
 MakeFunction(reset, [], {
-  /* Reestablezco todas las instancias de cartas y de jugador */
+  /* Reestablezco todas las instancias de proxima jugada y de jugador */
   ResetValue(j:cartas_emparejadas);
   ClearList(j:posee);
   ResetValue(pj:cortar);
   ResetValue(pj:mazo);
   ResetValue(pj:carta);
 
+  /* borro instancias de cartas */
   ForAll[c|Carta]
     DeleteInstance(c);
 
