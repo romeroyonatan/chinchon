@@ -43,7 +43,7 @@ MakeFunction( seleccionar_cartas, [boton], {
               /* si esa instancia esta en el mazo de descarte */
               If (Auxiliar:carta_mesa:ubicacion #= MAZO_DESCARTE) Then {
                 SetValue ( b:BackgroundColor, 112, 219, 147 );
-                SetValue ( Auxiliar:carta_mesa, JUGADOR1);
+                SetValue ( Auxiliar:carta_mesa:ubicacion, JUGADOR1);
                 ResetImage (b);
                 AppendToList(j:posee, Auxiliar:carta_mesa);
               }
@@ -102,12 +102,15 @@ MakeFunction( seleccionar_cartas, [boton], {
           /* seleccion de carta en mazo descarte */
           Auxiliar:carta_seleccionada:ubicacion = MAZO_DESCARTE;
           SetValue( boton:BackgroundColor, 255, 127, 80 );
-
+          
+          /* Limpio valores de jugada anterior */
+          ResetValue(pj:mazo);
+          ResetValue(pj:carta);
+          ResetValue(pj:cortar);
           /* inicio inferencia de proxima jugada */
-          /*BackwardChain( [NOASSERT], chinchon, Reglas:agrupar);*/
           ForwardChain( [NOASSERT], chinchon, Reglas:agrupar);
           ForwardChain( [NOASSERT], terminar_mano, Reglas:cortar);
-          BackwardChain( [NOASK], proxima_jugada, Reglas:tirar, Reglas:mazo);
+          ForwardChain( [NOASSERT],  proxima_jugada, Reglas:tirar, Reglas:mazo);
 
           /* muestro resultados de la inferencia al usuario */
           SetValue(txtLevantar:Title, "Levantar: " # pj:mazo);
