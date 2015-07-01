@@ -109,7 +109,6 @@ MakeFunction( seleccionar_cartas, [boton], {
           ResetValue( pj:mazo );
           ResetValue( pj:carta );
           ResetValue( pj:cortar );
-          SortList( j:posee );
           /* inicio inferencia de proxima jugada */
           ForwardChain( [NOASSERT], chinchon, Reglas:agrupar);
           ForwardChain( [NOASSERT], terminar_mano, Reglas:cortar);
@@ -119,7 +118,7 @@ MakeFunction( seleccionar_cartas, [boton], {
           SetValue(txtLevantar:Title, "Levantar: " # pj:mazo);
           If (Not (Null? (pj:carta) ) ) Then {
             SetValue( txtTirar:Title, "Tirar: " # pj:carta:valor # " de " # 
-                                                 pj:carta:palo);
+                      pj:carta:palo);
           } Else {
             SetValue( txtTirar:Title, "Tirar: " ) 
           };
@@ -347,7 +346,7 @@ MakeClass( Reglas, Root );
 MakeSlot( Reglas:agrupar );
 SetSlotOption( Reglas:agrupar, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:agrupar, MULTIPLE );
-SetValue ( Reglas:agrupar, R10, R11, R12, R13);
+SetValue ( Reglas:agrupar, R10, R11, R12, R13, R14);
 MakeSlot( Reglas:cortar );
 SetSlotOption( Reglas:cortar, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:cortar, MULTIPLE );
@@ -1675,59 +1674,17 @@ SetRulePriority(R13, 2);
        /*************************************
         ****  RULE: R14
         *************************************/
-MakeRule( R14, [c1|Carta c2|Carta c3|Carta c4|Carta c5|Carta c6|Carta c7|Carta jugador|Jugador],
-        c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1
-        And c4:ubicacion #= JUGADOR1 And c5:ubicacion #= JUGADOR1
-        And c6:ubicacion #= JUGADOR1 And c7:ubicacion #= JUGADOR1 And
-    c1:valor == ( c2:valor + 1 ) And c1:valor == ( c3:valor + 2 )
-        And c1:valor == ( c4:valor + 3 ) And c1:valor == ( c4:valor + 4 )
-        And c1:valor == ( c4:valor + 5 ) And c1:valor == ( c4:valor + 6 )
-        And c1:palo #= c2:palo And c1:palo #= c3:palo And c1:palo
-        #= c4:palo And c1:palo #= c5:palo And c1:palo #= c6:palo And c1:palo #= c7:palo,
+MakeRule( R14, [c|Carta],
+        c:ubicacion #= JUGADOR1 And 
+        Not(Null?(SelectList(j:posee, x, c:valor == x:valor + 1 And c:palo #= x:palo))) And
+        Not(Null?(SelectList(j:posee, x, c:valor == x:valor + 2 And c:palo #= x:palo))) And
+        Not(Null?(SelectList(j:posee, x, c:valor == x:valor + 3 And c:palo #= x:palo))) And
+        Not(Null?(SelectList(j:posee, x, c:valor == x:valor + 4 And c:palo #= x:palo))) And
+        Not(Null?(SelectList(j:posee, x, c:valor == x:valor + 5 And c:palo #= x:palo))) And
+        Not(Null?(SelectList(j:posee, x, c:valor == x:valor + 6 And c:palo #= x:palo))),
     {
-    jugador:cartas_emparejadas += 7;
-    AppendToList( c1:grupo, c2 );
-    AppendToList( c1:grupo, c3 );
-    AppendToList( c1:grupo, c4 );
-    AppendToList( c1:grupo, c5 );
-    AppendToList( c1:grupo, c6 );
-    AppendToList( c1:grupo, c7 );
-    AppendToList( c2:grupo, c1 );
-    AppendToList( c2:grupo, c3 );
-    AppendToList( c2:grupo, c4 );
-    AppendToList( c2:grupo, c5 );
-    AppendToList( c2:grupo, c6 );
-    AppendToList( c2:grupo, c7 );
-    AppendToList( c3:grupo, c1 );
-    AppendToList( c3:grupo, c2 );
-    AppendToList( c3:grupo, c4 );
-    AppendToList( c3:grupo, c5 );
-    AppendToList( c3:grupo, c6 );
-    AppendToList( c3:grupo, c7 );
-    AppendToList( c4:grupo, c1 );
-    AppendToList( c4:grupo, c2 );
-    AppendToList( c4:grupo, c3 );
-    AppendToList( c4:grupo, c5 );
-    AppendToList( c4:grupo, c6 );
-    AppendToList( c4:grupo, c7 );
-    AppendToList( c5:grupo, c1 );
-    AppendToList( c5:grupo, c2 );
-    AppendToList( c5:grupo, c3 );
-    AppendToList( c5:grupo, c4 );
-    AppendToList( c5:grupo, c6 );
-    AppendToList( c5:grupo, c7 );
-    AppendToList( c6:grupo, c1 );
-    AppendToList( c6:grupo, c2 );
-    AppendToList( c6:grupo, c3 );
-    AppendToList( c6:grupo, c4 );
-    AppendToList( c6:grupo, c5 );
-    AppendToList( c6:grupo, c7 );
-    AppendToList( c7:grupo, c1 );
-    AppendToList( c7:grupo, c2 );
-    AppendToList( c7:grupo, c3 );
-    AppendToList( c7:grupo, c4 );
-    AppendToList( c7:grupo, c5 );
-    AppendToList( c7:grupo, c6 );
+    j:cartas_emparejadas == 7;
+    pj:cortar=TRUE;
     } ); 
 SetRulePriority(R14, 3);
 
