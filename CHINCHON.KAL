@@ -10,136 +10,172 @@
         *************************************/
 MakeFunction( seleccionar_cartas, [boton], {
     /* Creo instancia de la carta */
-    If( Not( Instance?( boton:palo#boton:valor ) ) ) Then {
+    If( Not(Instance?( boton:palo#boton:valor ))) Then {
         MakeInstance( boton:palo#boton:valor, Carta);
-        SetValue (Auxiliar:carta_seleccionada, boton:palo#boton:valor);
-        SetValue (Auxiliar:carta_seleccionada:valor, boton:valor);
-        SetValue (Auxiliar:carta_seleccionada:palo, boton:palo);
     };
-
-    /* verifico que no seleccione 2 veces la misma carta */
-    If (Member?(j:posee, Auxiliar:carta_seleccionada)) Then {
-        PostMessage("Ya posee esta carta en su mano");
-    } Else {
+    SetValue (Auxiliar:carta_seleccionada, boton:palo#boton:valor);
+    SetValue (Auxiliar:carta_seleccionada:valor, boton:valor);
+    SetValue (Auxiliar:carta_seleccionada:palo, boton:palo);
 
     /* Jugador selecciona sus cartas */
     If (LengthList(j:posee) < 7) Then {
-        Auxiliar:carta_seleccionada:ubicacion = JUGADOR1;
-        AppendToList(j:posee, Auxiliar:carta_seleccionada);
-        SetValue( boton:BackgroundColor, 112, 219, 147 );
-        If (LengthList(j:posee) == 7) Then {
-            SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
-            ResetImage(txtAyuda);
-            SetValue (pj:cortar, NULL); /* fuerzo a que calcule prox jugada */
-        }
-
+        carta_mano( boton );
     /* Juego en curso */
     } Else {
-
-        /* si tengo que levantar carta en mazo de descarte */
-        If (pj:mazo #= MAZO_DESCARTE) Then {
-          EnumList (Button:InstanceList, b, {
-            /* si existe una instancia para esa carta */
-            If (Slot?(b:valor) And Instance? (b:palo#b:valor)) Then {
-              SetValue(Auxiliar:carta_mesa, b:palo#b:valor);
-              /* si esa instancia esta en el mazo de descarte */
-              If (Auxiliar:carta_mesa:ubicacion #= MAZO_DESCARTE) Then {
-                SetValue ( b:BackgroundColor, 112, 219, 147 );
-                SetValue ( Auxiliar:carta_mesa:ubicacion, JUGADOR1);
-                ResetImage (b);
-                AppendToList(j:posee, Auxiliar:carta_mesa);
-              }
-            }
-          });
+        /* Seleccion carta en la mesa */
+        If (Auxiliar:estado #= SELECCION_MESA) Then {
+            carta_mesa( boton );
+        } Else {
+            /* Seleccion carta levantada */
+            If( Auxiliar:estado #= SELECCION_LEVANTADA ) Then {
+               carta_levantada( boton );
+            } Else {
+                /* Seleccion carta a tirar */
+                If (Auxiliar:estado #= SELECCION_TIRAR) Then {
+                    carta_tirar( boton );
+                };
+            };
         };
+    };
+});
 
-        /* limpio las 2 cartas descartadas */
+       /*************************************
+        ****  FUNCTION: carta_mano
+        *************************************/
+/** Seleccion de cartas en mano */
+MakeFunction( carta_mano, [boton], {
+   /* verifico que no seleccione 2 veces la misma carta */
+   If (Member?(j:posee, Auxiliar:carta_seleccionada)) Then {
+       PostMessage("Ya posee esta carta en su mano");
+   } Else {
+       Auxiliar:carta_seleccionada:ubicacion = JUGADOR1;
+       AppendToList(j:posee, Auxiliar:carta_seleccionada);
+       SetValue( boton:BackgroundColor, 112, 219, 147 );
+       If (LengthList(j:posee) == 7) Then {
+           SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
+           ResetImage(txtAyuda);
+           /* indico proximo estado */
+           SetValue (Auxiliar:estado, SELECCION_MESA); 
+       }
+   }
+});
+
+       /*************************************
+        ****  FUNCTION: carta_mesa
+        *************************************/
+/** Seleccion de carta en mesa */
+MakeFunction( carta_mesa, [boton], {
+    /* seleccion de carta en mesa */
+    Auxiliar:carta_seleccionada:ubicacion = MESA;
+    SetValue( boton:BackgroundColor, 255, 127, 80 );
+
+    /* inicio inferencia del lugar a levantar */
+    ResetValue( pj:levantar );
+    ForwardChain( [NOASSERT], levantar, Reglas:levantar);
+
+    /* muestro resultados de la inferencia al usuario */
+    SetValue(txtLevantar:Title, "Levantar: " # pj:levantar);
+
+    /* actualizo mensajes de ayuda */
+    SetValue(txtAyuda:Title, "Seleccione carta levantada");
+    ResetImage(boton);
+    ResetImage(txtLevantar);
+    ResetImage(txtAyuda);
+
+    /* proximo estado */
+    SetValue (Auxiliar:estado, SELECCION_LEVANTADA); 
+});
+
+       /*************************************
+        ****  FUNCTION: carta_levantada
+        *************************************/
+/** Seleccion de carta levantada */
+MakeFunction( carta_levantada, [boton], {
+    /* agrego carta a lista de cartas del jugador */
+    SetValue( Auxiliar:carta_seleccionada:ubicacion, JUGADOR1 );
+    AppendToList( j:posee, Auxiliar:carta_seleccionada );
+
+    /* cambio el boton de color */
+    SetValue( boton:BackgroundColor, 112, 219, 147 );
+
+    /* agrupo las cartas */
+    ForwardChain( [NOASSERT], cortar, Reglas:agrupar );
+
+    /* inicio inferencia de la carta a tirar */
+    ResetValue( pj:tirar );
+    ForwardChain( [NOASSERT], tirar, Reglas:tirar );
+
+    /* determino si puedo cortar */
+    ResetValue( pj:cortar );
+    ForwardChain( [NOASSERT], cortar, Reglas:cortar);
+    If (pj:cortar) Then {
+      PostMessage ("Puede cortar. Felicidades, Ha ganado la mano");
+      reset();
+    };
+
+    /* muestro resultados de la inferencia al usuario */
+    If (Not (Null? (pj:tirar) ) ) Then {
+      SetValue( txtTirar:Title, "Tirar: " # pj:tirar:valor # " de "
+                # pj:tirar:palo);
+    } Else {
+      SetValue( txtTirar:Title, "Tirar: " ) 
+    };
+
+    /* actualizo mensajes de ayuda */
+    SetValue( txtAyuda:Title, "Seleccione la carta que va a tirar" );
+    ResetImage( boton );
+    ResetImage( txtTirar );
+    ResetImage( txtAyuda );
+
+    /* proximo estado */
+    SetValue( Auxiliar:estado, SELECCION_TIRAR ); 
+});
+
+       /*************************************
+        ****  FUNCTION: carta_tirar
+        *************************************/
+/** Seleccion de carta a tirar */
+MakeFunction( carta_tirar, [boton], {
+    If( Not( Member?( j:posee, Auxiliar:carta_seleccionada ))) Then {
+        PostMessage( "Debe seleccionar una carta que posea en su mano." );
+    } Else {
+        /* restablezco color boton */
+        ResetValue( boton:BackgroundColor );
+        ResetImage( boton );
+        
+        /* limpio carta que esta en la mesa */
         EnumList( Button:InstanceList, b, {
           /* si existe instancia creada para este boton */
           If (Slot?(b:valor) And Instance? (b:palo#b:valor)) Then {
-            SetValue(Auxiliar:carta_mesa, b:palo#b:valor);
+            SetValue( Auxiliar:carta_mesa, b:palo#b:valor );
 
-            /* carta que esta en el mazo de descarte */
-            If (Auxiliar:carta_mesa:ubicacion #= MAZO_DESCARTE) Then {
+            /* carta que esta en la mesa */
+            If ( Auxiliar:carta_mesa:ubicacion #= MESA ) Then {
               /* restablezco color boton */
-              ResetValue (b:BackgroundColor);
-              ResetImage (b);
+              ResetValue( b:BackgroundColor );
+              ResetImage( b );
               /* borro instancia de la carta */
               DeleteInstance(Auxiliar:carta_mesa);  
-            };
-            /* carta tirada al mazo de descarte por recomendacion anterior */
-            If (Not (Null? (pj:carta)) And 
-                b:valor == pj:carta:valor And
-                b:palo #= pj:carta:palo) Then {
-               /* restablezco color boton */
-               ResetValue (b:BackgroundColor);
-               ResetImage (b);
-               /* la borro de la lista de cartas del jugador */
-               If(Member?(j:posee, pj:carta)) Then 
-                    RemoveFromList (j:posee, pj:carta);
-               /* borro instancia de la carta */
-               DeleteInstance(pj:carta); 
-               pj:carta = NULL;
             };
           };
         });
 
-        /* seleccion carta levantada del mazo de levante */
-        If (Not(Null?(pj:cortar)) And pj:mazo #= MAZO_LEVANTE) Then {
-          /* actualizo atributos de la carta */
-          Auxiliar:carta_seleccionada:ubicacion = JUGADOR1;
-          /* agrego carta a lista de cartas del jugador */
-          AppendToList(j:posee, Auxiliar:carta_seleccionada);
-          /* cambio el boton de color */
-          SetValue( boton:BackgroundColor, 112, 219, 147 );
-          /* indico que necesito conocer carta en mazo de descarte */
-          SetValue(pj:cortar, NULL);
-          /* actualizo mensaje de ayuda */
-          SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
-          ResetImage(txtAyuda);
+        /* la borro de la lista de cartas del jugador */
+        If( Member?( j:posee, Auxiliar:carta_seleccionada )) Then 
+             RemoveFromList (j:posee, Auxiliar:carta_seleccionada);
 
-        /* seleccionar carta del mazo de descarte */
-        } Else {
+        /* borro instancia de la carta */
+        DeleteInstance( Auxiliar:carta_seleccionada ); 
+        ResetValue( pj:tirar );
 
-          /* seleccion de carta en mazo descarte */
-          Auxiliar:carta_seleccionada:ubicacion = MAZO_DESCARTE;
-          SetValue( boton:BackgroundColor, 255, 127, 80 );
-          
-          /* Limpio valores de jugada anterior */
-          ResetValue( pj:mazo );
-          ResetValue( pj:carta );
-          ResetValue( pj:cortar );
-          /* inicio inferencia de proxima jugada */
-          ForwardChain( [NOASSERT], chinchon, Reglas:agrupar);
-          ForwardChain( [NOASSERT], terminar_mano, Reglas:cortar);
-          ForwardChain( [NOASSERT],  proxima_jugada, Reglas:tirar, Reglas:mazo);
+        /* actualizo mensajes de ayuda */
+        SetValue( txtAyuda:Title, "Seleccione carta en mesa" );
+        ResetImage( boton );
+        ResetImage( txtAyuda );
 
-          /* muestro resultados de la inferencia al usuario */
-          SetValue(txtLevantar:Title, "Levantar: " # pj:mazo);
-          If (Not (Null? (pj:carta) ) ) Then {
-            SetValue( txtTirar:Title, "Tirar: " # pj:carta:valor # " de " # 
-                      pj:carta:palo);
-          } Else {
-            SetValue( txtTirar:Title, "Tirar: " ) 
-          };
-
-          /* actualizo mensajes de ayuda */
-          If (pj:mazo #= MAZO_LEVANTE) Then {
-            SetValue(txtAyuda:Title, "Seleccione carta levantada del mazo de levante");
-          } Else {
-            SetValue( txtAyuda:Title, "Seleccione carta en mazo de descarte");
-          };
-          If (pj:cortar) Then {
-            PostMessage ("Puede cortar. Felicidades, Ha ganado la mano");
-            reset();
-          };
-          ResetImage(boton);
-          ResetImage(txtLevantar);
-          ResetImage(txtTirar);
-          ResetImage(txtAyuda);
-        }
-    }
-  }
+        /* proximo estado */
+        SetValue (Auxiliar:estado, SELECCION_MESA); 
+    };
 });
 
 /* Reinicia los valores de todas las instancias para una nueva mano */
@@ -148,8 +184,8 @@ MakeFunction(reset, [], {
   ResetValue(j:cartas_emparejadas);
   ClearList(j:posee);
   ResetValue(pj:cortar);
-  ResetValue(pj:mazo);
-  ResetValue(pj:carta);
+  ResetValue(pj:levantar);
+  ResetValue(pj:tirar);
 
   /* borro instancias de cartas */
   ForAll[c|Carta]
@@ -314,7 +350,7 @@ SetSlotOption( Carta:prioridad, VALUE_TYPE, NUMBER );
 SetSlotOption( Carta:prioridad, MINIMUM_VALUE, 1 );
 SetSlotOption( Carta:prioridad, MAXIMUM_VALUE, 3 );
 MakeSlot( Carta:ubicacion );
-SetSlotOption( Carta:ubicacion, ALLOWABLE_VALUES, JUGADOR1, JUGADOR2, MAZO_LEVANTE, MAZO_DESCARTE );
+SetSlotOption( Carta:ubicacion, ALLOWABLE_VALUES, JUGADOR1, JUGADOR2, MAZO_LEVANTE, MESA );
 Carta:ubicacion = MAZO_LEVANTE;
 MakeSlot( Carta:grupo );
 SetSlotOption( Carta:grupo, MULTIPLE );
@@ -326,12 +362,12 @@ ClearList( Carta:grupo );
         ****  CLASS: PJ
         *************************************/
 MakeClass( PJ, Root );
-MakeSlot( PJ:mazo );
-SetSlotOption( PJ:mazo, ALLOWABLE_VALUES, MAZO_DESCARTE, MAZO_LEVANTE );
-PJ:mazo = MAZO_LEVANTE;
-MakeSlot( PJ:carta );
-SetSlotOption( PJ:carta, VALUE_TYPE, OBJECT );
-SetSlotOption( PJ:carta, ALLOWABLE_CLASSES, Carta );
+MakeSlot( PJ:levantar );
+SetSlotOption( PJ:levantar, ALLOWABLE_VALUES, MESA, MAZO_LEVANTE );
+PJ:levantar = MAZO_LEVANTE;
+MakeSlot( PJ:tirar );
+SetSlotOption( PJ:tirar, VALUE_TYPE, OBJECT );
+SetSlotOption( PJ:tirar, ALLOWABLE_CLASSES, Carta );
 MakeSlot( PJ:cortar );
 SetSlotOption( PJ:cortar, VALUE_TYPE, BOOLEAN );
 PJ:cortar = FALSE;
@@ -351,16 +387,14 @@ MakeSlot( Reglas:cortar );
 SetSlotOption( Reglas:cortar, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:cortar, MULTIPLE );
 SetValue ( Reglas:cortar, R01, R02, R03, R04, R05);
-MakeSlot( Reglas:mazo );
-SetSlotOption( Reglas:mazo, VALUE_TYPE, TEXT );
-SetSlotOption( Reglas:mazo, MULTIPLE );
-SetValue ( Reglas:mazo, R20, R21, R22, R23, R24, R25);
+MakeSlot( Reglas:levantar );
+SetSlotOption( Reglas:levantar, VALUE_TYPE, TEXT );
+SetSlotOption( Reglas:levantar, MULTIPLE );
+SetValue ( Reglas:levantar, R20, R21, R22, R23, R24, R25);
 MakeSlot( Reglas:tirar );
 SetSlotOption( Reglas:tirar, VALUE_TYPE, TEXT );
 SetSlotOption( Reglas:tirar, MULTIPLE );
 SetValue ( Reglas:tirar, R30, R31, R32, R33, R34, R35, R36, R37);
-MakeSlot( Reglas:estado );
-SetSlotOption( Reglas:tirar, VALUE_TYPE, TEXT );
 
 MakeSlot( Button:InstanceList );
 SetSlotOption( Button:InstanceList, VALUE_TYPE, OBJECT );
@@ -390,6 +424,8 @@ MakeSlot (Auxiliar, carta_seleccionada );
 SetSlotOption( Auxiliar:carta_seleccionada, VALUE_TYPE, TEXT );
 MakeSlot (Auxiliar, carta_mesa );
 SetSlotOption( Auxiliar:carta_mesa, VALUE_TYPE, TEXT );
+MakeSlot (Auxiliar, estado );
+SetSlotOption( Auxiliar:estado, VALUE_TYPE, TEXT );
 
        /*************************************
         ****  INSTANCE: j
@@ -1694,66 +1730,66 @@ SetRulePriority(R14, 3);
         ****  RULE: R20
         *************************************/
 MakeRule( R20, [c1|Carta c2|Carta c3|Carta],
-    c1:ubicacion #= MAZO_DESCARTE And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
+    c1:ubicacion #= MESA And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
     c1:valor == c2:valor And c1:valor == c3:valor And
     Not( c1:palo #= c2:palo ) And Not( c1:palo #= c3:palo ) And Not( c3:palo #= c2:palo ),
     {
-        SetValue (pj:mazo, MAZO_DESCARTE);
+        SetValue (pj:levantar, MESA);
     });
 
        /*************************************
         ****  RULE: R21
         *************************************/
 MakeRule( R21, [c1|Carta c2|Carta c3|Carta],
-    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= MAZO_DESCARTE And c3:ubicacion #= JUGADOR1 And 
+    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= MESA And c3:ubicacion #= JUGADOR1 And 
     c1:valor == c2:valor And c1:valor == c3:valor And
     Not( c1:palo #= c2:palo ) And Not( c1:palo #= c3:palo ) And Not( c3:palo #= c2:palo ),
     {
-        SetValue (pj:mazo, MAZO_DESCARTE);
+        SetValue (pj:levantar, MESA);
     });
 
        /*************************************
         ****  RULE: R22
         *************************************/
 MakeRule( R22, [c1|Carta c2|Carta c3|Carta],
-    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= MAZO_DESCARTE And 
+    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= MESA And 
     c1:valor == c2:valor And c1:valor == c3:valor And
     Not( c1:palo #= c2:palo ) And Not( c1:palo #= c3:palo ) And Not( c3:palo #= c2:palo ),
     {
-        SetValue (pj:mazo, MAZO_DESCARTE);
+        SetValue (pj:levantar, MESA);
     });
 
        /*************************************
         ****  RULE: R23
         *************************************/
 MakeRule( R23, [c1|Carta c2|Carta c3|Carta],
-    c1:ubicacion #= MAZO_DESCARTE And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
+    c1:ubicacion #= MESA And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= JUGADOR1 And 
     c1:valor == c2:valor+1 And c1:valor == c3:valor+2 And
     c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo #= c2:palo,
     {
-        SetValue (pj:mazo, MAZO_DESCARTE);
+        SetValue (pj:levantar, MESA);
     });
 
        /*************************************
         ****  RULE: R24
         *************************************/
 MakeRule( R24, [c1|Carta c2|Carta c3|Carta],
-    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= MAZO_DESCARTE And c3:ubicacion #= JUGADOR1 And 
+    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= MESA And c3:ubicacion #= JUGADOR1 And 
     c1:valor == c2:valor+1 And c1:valor == c3:valor+2 And
     c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo #= c2:palo,
     {
-        SetValue (pj:mazo, MAZO_DESCARTE);
+        SetValue (pj:levantar, MESA);
     });
 
        /*************************************
         ****  RULE: R25
         *************************************/
 MakeRule( R25, [c1|Carta c2|Carta c3|Carta],
-    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= MAZO_DESCARTE And 
+    c1:ubicacion #= JUGADOR1 And c2:ubicacion #= JUGADOR1 And c3:ubicacion #= MESA And 
     c1:valor == c2:valor+1 And c1:valor == c3:valor+2 And
     c1:palo #= c2:palo And c1:palo #= c3:palo And c3:palo #= c2:palo,
     {
-        SetValue (pj:mazo, MAZO_DESCARTE);
+        SetValue (pj:levantar, MESA);
     });
        /*************************************
         ****  RULE: R30
@@ -1799,7 +1835,7 @@ MakeRule( R33, [c|Carta],
 MakeRule( R34, [c|Carta],
     c:ubicacion #= JUGADOR1 And c:prioridad==3,
     {
-        SetValue (pj:carta, c);
+        SetValue (pj:tirar, c);
     });
 SetRulePriority(R34, 3);
        /*************************************
@@ -1808,7 +1844,7 @@ SetRulePriority(R34, 3);
 MakeRule( R35, [c|Carta],
     c:ubicacion #= JUGADOR1 And c:prioridad==2,
     {
-        SetValue (pj:carta, c);
+        SetValue (pj:tirar, c);
     });
 SetRulePriority(R35, 2);
        /*************************************
@@ -1817,7 +1853,7 @@ SetRulePriority(R35, 2);
 MakeRule( R36, [c|Carta],
     c:ubicacion #= JUGADOR1 And c:prioridad==1,
     {
-        SetValue (pj:carta, c);
+        SetValue (pj:tirar, c);
     });
 SetRulePriority(R36, 1);
        /*************************************
@@ -1826,12 +1862,13 @@ SetRulePriority(R36, 1);
 MakeRule( R37, [c|Carta],
     c:ubicacion #= JUGADOR1 And c:prioridad==0,
     {
-        SetValue (pj:carta, c);
+        SetValue (pj:tirar, c);
     });
 SetRulePriority(R37, 0);
 /*********************************************************/
 /**         ALL GOALS ARE SAVED BELOW             **/
 /*********************************************************/
-MakeGoal (proxima_jugada, Not(Null?(pj:carta)) And Not(Null?(pj:mazo)));
-MakeGoal (chinchon, j:cartas_emparejadas >= 7);
+MakeGoal (tirar, Not(Null?(pj:tirar)));
+MakeGoal (levantar, Not(Null?(pj:levantar)));
+MakeGoal (cortar, j:cartas_emparejadas >= 7);
 MakeGoal (terminar_mano, pj:cortar);
